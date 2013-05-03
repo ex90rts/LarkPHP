@@ -15,7 +15,7 @@ class Router{
     public static function route(){
         $request = Env::getInstance('Flexper\Request');
         $response = Env::getInstance('Flexper\Response');
-        
+
         try{
             $parts = explode('/', $request->action);
             $partsUcfirst = array(
@@ -47,19 +47,19 @@ class Router{
             echo '</pre>';
         }
     }
-    
+
     public static function getPathInfo() {
         $uri = $_SERVER['REQUEST_URI'];
         $flag = '.php';
         $protalFilePos = strpos($uri, $flag);
         $paramPos = strpos($uri, '?');
-        
+
         if ($protalFilePos === false) {
             $protalFilePos = 0;
         } else {
             $protalFilePos += strlen($flag);
         }
-        
+
         if ($paramPos === false) {
             $paramPos = strlen($uri);
         } else {
