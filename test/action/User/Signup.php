@@ -15,19 +15,21 @@ class Signup extends Action{
         if (!isset($this->request->password)){
             throw new \Exception('password can not be empty');
         }
+        echo "aaa";
     }
 
     function checkPermissions (){
-
+    	echo "bbb";
     }
 
     function execute (){
+    	echo "ccc";
         echo "Username: ".$this->request->username."<br />";
         echo "Password: ".$this->request->password."<br />";
         $this->model('User')->insert(array('username'=>$this->request->username, 'password'=>$this->request->password));
     }
 
     function finish (){
-
+    	echo "ddd";
     }
 }
