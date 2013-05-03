@@ -4,6 +4,9 @@ namespace Knock\Action\User;
 use Flexper\Env;
 use Flexper\Action;
 
+ini_set('display_errors', 1);
+error_reporting(E_ALL);
+
 class Signup extends Action{
 
     function validate (){
