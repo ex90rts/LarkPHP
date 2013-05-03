@@ -14,6 +14,8 @@ abstract class Model{
     public function __construct(){
         $engineName = Env::getOption('dataEngine');
         $this->dataEngine = Env::getInstance($engineName);
+        echo $engineName;
+        var_dump($this->dataEngine);
     }
 
     public function getDataEngine(){
