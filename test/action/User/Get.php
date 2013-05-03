@@ -30,21 +30,8 @@ class Get extends Action{
         $skip = ($page-1)*$limit;
         $data = $this->model('User')->query($query, $limit, $skip);
 
-        //$response->users = $data;
-        //$response->template('users.php');
-
-        $query1 = new Query();
-        $query1->table('JokeContent')
-        	->hash(10015)
-        	->insert(array(
-        		'jokeId' => 10015,
-        		'content' => 'wowowow',
-        		'createTime' => Util::getNow(),
-        	));
-        echo $query1."\r\n";
-        $mysql = Env::getInstance('Flexper\Mysql');
-        $res = $mysql->exec($query1);
-        var_dump($res);
+        $response->users = $data;
+        $response->template('users.php');
 
         $this->logger()->appDebug(array('api'=>'user/get', 'page'=>$page));
         $this->logger()->logDebug("test");
