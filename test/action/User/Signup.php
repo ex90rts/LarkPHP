@@ -24,7 +24,7 @@ class Signup extends Action{
     function execute (){
         echo "Username: ".$this->request->username."<br />";
         echo "Password: ".$this->request->password."<br />";
-        $this->model('UserModel')->insert(array('username'=>$this->request->username, 'password'=>$this->request->password));
+        $this->model('User')->insert(array('username'=>$this->request->username, 'password'=>$this->request->password));
     }
 
     function finish (){
