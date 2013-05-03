@@ -13,11 +13,11 @@ class Get extends Action{
     function permission(){
         return true;
     }
-    
+
     function execute (){
         $request = $this->request;
         $response = $this->response;
-        
+
         $query = array();
         if (!empty($request->username)){
             $query['username'] = $request->username;
@@ -29,10 +29,10 @@ class Get extends Action{
         }
         $skip = ($page-1)*$limit;
         $data = $this->model('User')->query($query, $limit, $skip);
-        
+
         //$response->users = $data;
         //$response->template('users.php');
-        
+
         $query1 = new Query();
         $query1->table('JokeContent')
         	->hash(10015)
@@ -45,11 +45,11 @@ class Get extends Action{
         $mysql = Env::getInstance('Flexper\Mysql');
         $res = $mysql->exec($query1);
         var_dump($res);
-        
+
         $this->logger()->appDebug(array('api'=>'user/get', 'page'=>$page));
         $this->logger()->logDebug("test");
     }
-    
+
     function redirect(){
         $this->response->redirect('goto', '/test/index.php?action=user/login');
     }

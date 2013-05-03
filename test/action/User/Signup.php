@@ -1,6 +1,7 @@
 <?php
-use Flexper\Env;
+namespace Knock\Action\User;
 
+use Flexper\Env;
 use Flexper\Action;
 
 class Signup extends Action{
@@ -15,7 +16,7 @@ class Signup extends Action{
     }
 
     function checkPermissions (){
-        
+
     }
 
     function execute (){
@@ -25,6 +26,6 @@ class Signup extends Action{
     }
 
     function finish (){
-        
+
     }
 }

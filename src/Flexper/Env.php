@@ -11,31 +11,31 @@ class Env{
 	 * @var string
 	 */
     public static $codename = 'Flexper';
-    
+
     /**
      * Current version of this framework
      * @var string
      */
     public static $version = '0.0.1';
-    
+
 	/**
 	 * Framework base configuration
 	 * @var array
 	 */
 	private static $_options;
-	
+
 	/**
 	 * Pool of singleton instance of common object like cache handler/logger
 	 * @var array
 	 */
 	private static $_instancesPool;
-	
+
 	/**
 	 * Remember is session already started
 	 * @var boolean
 	 */
 	private static $_sessionStarted = false;
-	
+
 	/**
 	 * Initialize function, init the framework options
 	 * @param array $options
@@ -49,7 +49,7 @@ class Env{
 			'namespace'      => 'Flexpertest',
 			'platform'       => 'foo',
 			'libPath'        => dirname(__FILE__).'/../',
-			'logDir'         => sys_get_temp_dir() . strtolower(self::$codename),
+			'logDir'         => sys_get_temp_dir() . DIRECTORY_SEPARATOR . strtolower(self::$codename),
 			'logTypes'       => array('action', 'error', 'debug', 'exception'),
 			'configDir'      => 'config',
 			'timezone'       => 'Asia/Shanghai',
@@ -60,7 +60,7 @@ class Env{
 			'errorHandler'   => array('\Flexper\Env', 'defaultErrorHandler'),
 			'error_reporting'=> E_ALL & ~E_NOTICE,
 		);
-		
+
 		$requestOptions = @$_REQUEST['solomophp'];
 		foreach($options as $key=>$value){
 		    $default[$key] = $value;
@@ -68,22 +68,22 @@ class Env{
 		        $default[$key] = $requestOptions[$key];
 		    }
 		}
-		
+
 		error_reporting($default['error_reporting']);
-		
+
 		$default['projectPath'] = realpath($default['projectPath']);
 		$default['libPath'] = realpath($default['libPath']);
-		
+
 		self::$_options = $default;
-		
+
 		set_error_handler(self::$_options['errorHandler'], $default['error_reporting']);
 		spl_autoload_register(self::$_options['autoloader']);
-		
+
 		if (!empty(self::$_options['timezone'])){
 		    date_default_timezone_set(self::$_options['timezone']);
 		}
 	}
-	
+
 	/**
 	 * Return the value of a special option
 	 * @param string $optionName
@@ -96,7 +96,7 @@ class Env{
 	        return null;
 	    }
 	}
-	
+
 	/**
 	 * Start Session method for ensure session will only be started once
 	 */
@@ -106,7 +106,7 @@ class Env{
 	        self::$_sessionStarted = true;
 	    }
 	}
-	
+
 	/**
 	 * Default autoloader for framework
 	 * @param string $className
@@ -117,7 +117,7 @@ class Env{
 	    if (count($classParts)<2){
 	        throw new NoAutoloaderDefinedException(sprintf('try to autoload class named %s', $className));
 	    }
-	    
+
 	    $baseNamespace = array_shift($classParts);
 	    $subNamespace = array_shift($classParts);
 	    if ($baseNamespace===self::$codename){
@@ -129,14 +129,14 @@ class Env{
 	    }else{
 	        throw new NoAutoloaderDefinedException(sprintf('try to autoload class named %s', $className));
 	    }
-	    
+
 	    if (file_exists($filePath)){
 	        require_once $filePath;
 	    }else{
 	        throw new PathNotFoundException(sprintf('path %s not found', $filePath));
 	    }
 	}
-	
+
 	/**
 	 * Default error handler for framework
 	 */
@@ -145,7 +145,7 @@ class Env{
 	    print_r(debug_backtrace());
 	    echo "</pre>";
 	}
-	
+
 	/**
 	 * Return the instance of a common object from the instance pool
 	 * @param string $className
@@ -160,7 +160,7 @@ class Env{
 	        return self::$_instancesPool[$className];
 	    }
 	}
-	
+
 	/**
 	 * Execute the request
 	 */
