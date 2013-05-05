@@ -20,18 +20,18 @@ abstract class Model{
     private $_engineType;
 
     public function __construct(){
-    	$engineType = self::getEngine();
+    	$engineType = $this->getEngine();
 var_dump($engineType);
     	$this->_engineType = $engineType;
 
         $this->engine = Env::getInstance($engineType);
     }
 
-    static function getEngine(){
+    abstract function getEngine(){
         return Env::getOption('dataEngine');
     }
 
-    static function getTable();
+    abstract function getTable();
 
     public function insert(array $record){
     	if ($this->_engineName==self::ENGINE_MONGO){
