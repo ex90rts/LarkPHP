@@ -127,9 +127,9 @@ abstract class Action{
 						}
 						break;
 					case self::VALID_REGEX:
-						$regex = array_shift($rule);echo "<{$regex}>";
+						print_r($rule);
+						$regex = array_shift($rule);
 						foreach ($rule as $field){
-							echo "<{$field}>";
 							if (!preg_match($regex, $this->request->$field)){
 								throw new ActionValidationException("field $field is not match with regex:$regex, {$this->request->$field} given");
 							}
