@@ -96,7 +96,7 @@ abstract class Action{
     function validate(){
 		if (!empty($this->rules)){
 			foreach ($this->rules as $rule){
-				$type = array_shift($rule);echo "{$type}|";
+				$type = array_shift($rule);
 				switch ($type){
 					case self::VALID_REQUIRED:
 						foreach ($rule as $field){
@@ -127,7 +127,6 @@ abstract class Action{
 						}
 						break;
 					case self::VALID_REGEX:
-						print_r($rule);
 						$regex = array_shift($rule);
 						foreach ($rule as $field){
 							if (!preg_match($regex, $this->request->$field)){
