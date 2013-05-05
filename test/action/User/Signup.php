@@ -9,9 +9,9 @@ class Signup extends Action{
 
 	function init(){
 		$this->rules = array(
-			array(VALID_REQUIRED, 'username', 'password'),
-			array(VALID_REGEX, '/^\w{5,20}$/', 'username'),
-			array(VALID_REGEX, '/^?{6,16}$/'. 'password'),
+			array(parent::VALID_REQUIRED, 'username', 'password'),
+			array(parent::VALID_REGEX, '/^\w{5,20}$/', 'username'),
+			array(parent::VALID_REGEX, '/^?{6,16}$/'. 'password'),
 		);
 	}
 
