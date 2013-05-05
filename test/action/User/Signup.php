@@ -3,19 +3,17 @@ namespace Knock\Action\User;
 
 use Flexper\Env;
 use Flexper\Action;
-
-error_reporting(E_ALL);
+use Flexper\Constants;
 
 class Signup extends Action{
 
-    function validate (){
-        if (!isset($this->request->username)){
-            throw new \Exception('user name can not be empty');
-        }
-        if (!isset($this->request->password)){
-            throw new \Exception('password can not be empty');
-        }
-    }
+	function init(){
+		$this->rules = array(
+			array(VALID_REQUIRED, 'username', 'password'),
+			array(VALID_REGEX, '/^\w{5,20}$/', 'username'),
+			array(VALID_REGEX, '/^*{6,16}$/'. 'password'),
+		);
+	}
 
     function execute (){
         echo "Username: ".$this->request->username."<br />";

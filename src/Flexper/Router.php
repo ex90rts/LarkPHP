@@ -27,6 +27,7 @@ class Router{
             }
             $actionClass = implode('\\', $partsUcfirst);
             $action = new $actionClass($request, $response);
+            $action->init();
             $action->validate();
 	        $res = $action->checkPermissions();
 	        if ($res){
