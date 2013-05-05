@@ -11,7 +11,7 @@ class Signup extends Action{
 		$this->rules = array(
 			array(parent::VALID_REQUIRED, 'username', 'password'),
 			array(parent::VALID_REGEX, '/^\w{5,20}$/', 'username'),
-			array(parent::VALID_REGEX, '/^?{6,16}$/'. 'password'),
+			array(parent::VALID_REGEX, '/^\w{6,16}$/'. 'password'),
 		);
 	}
 
