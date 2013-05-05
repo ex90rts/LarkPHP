@@ -4,12 +4,7 @@ namespace Knock\Model;
 use Flexper\Model;
 
 class User extends Model{
-
-    static function getEngine(){
-		return parent::ENGINE_MONGO;
-    }
-
-    static public function getTable(){
+    public function getTable(){
     	return 'Users';
     }
 
