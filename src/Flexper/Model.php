@@ -27,7 +27,7 @@ var_dump($engineType);
         $this->engine = Env::getInstance($engineType);
     }
 
-    abstract function getEngine(){
+    function getEngine(){
         return Env::getOption('dataEngine');
     }
 
