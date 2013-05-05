@@ -15,6 +15,11 @@ class Signup extends Action{
 		);
 	}
 
+	function validate(){
+		echo "action validate called";
+		parent::validate();
+	}
+
     function execute (){
         echo "Username: ".$this->request->username."<br />";
         echo "Password: ".$this->request->password."<br />";
