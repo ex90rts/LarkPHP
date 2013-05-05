@@ -14,6 +14,6 @@ class User extends Model{
     }
 
     public function query(array $query, $limit=0, $skip=0){
-        return $this->getDataEngine()->find($this->table, $query, array(), array(), $limit, $skip);
+        return $this->engine->find($this->table, $query, array(), array(), $limit, $skip);
     }
 }
