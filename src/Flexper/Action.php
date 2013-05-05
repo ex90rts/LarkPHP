@@ -98,35 +98,35 @@ abstract class Action{
 			foreach ($this->rules as $rule){
 				$type = array_shift($rule);
 				switch ($type){
-					case VALID_REQUIRED:
+					case self::VALID_REQUIRED:
 						foreach ($rule as $field){
 							if (empty($this->request->$field)){
 								throw new ActionValidationException("field $field is required, empty given");
 							}
 						}
 						break;
-					case VALID_INT:
+					case self::VALID_INT:
 						foreach ($rule as $field){
 							if (!is_int($this->request->$field)){
 								throw new ActionValidationException("field $field need to be int, {$this->request->$field} given");
 							}
 						}
 						break;
-					case VALID_NUMBER:
+					case self::VALID_NUMBER:
 						foreach ($rule as $field){
 							if (!is_int($this->request->$field)){
 								throw new ActionValidationException("field $field need to be number, {$this->request->$field} given");
 							}
 						}
 						break;
-					case VALID_ARRAY:
+					case self::VALID_ARRAY:
 						foreach ($rule as $field){
 							if (!is_array($this->request->$field)){
 								throw new ActionValidationException("field $field need to be array, {$this->request->$field} given");
 							}
 						}
 						break;
-					case VALID_REGEX:
+					case self::VALID_REGEX:
 						$regex = array_shift($rule);
 						foreach ($rule as $field){
 							if (!preg_match($regex, $this->request->$field)){

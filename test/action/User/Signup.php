@@ -11,13 +11,8 @@ class Signup extends Action{
 		$this->rules = array(
 			array(VALID_REQUIRED, 'username', 'password'),
 			array(VALID_REGEX, '/^\w{5,20}$/', 'username'),
-			array(VALID_REGEX, '/^*{6,16}$/'. 'password'),
+			array(VALID_REGEX, '/^?{6,16}$/'. 'password'),
 		);
-	}
-
-	function validate(){
-		echo "action validate called";
-		parent::validate();
 	}
 
     function execute (){
