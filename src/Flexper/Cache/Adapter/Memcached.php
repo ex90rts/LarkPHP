@@ -10,13 +10,13 @@ class Memcached implements AdapterInterface{
      * @var Object
      */
     private $_cache = null;
-    
+
     /**
      * Var to save current unix timestamp in script
      * @var int
      */
     private $_now;
-    
+
     /**
      * Check if this cache service is support on current server
      * @return boolean
@@ -24,7 +24,7 @@ class Memcached implements AdapterInterface{
     public static function isSupport(){
         return class_exists('\Memcached', false);
     }
-	
+
     /**
      * Construct the cache service
      * @param string $adapterName
@@ -34,10 +34,10 @@ class Memcached implements AdapterInterface{
         if (!isset($config['servers'])){
             throw new \Exception('Memcached servers missed in configuration');
         }
-        
+
         $this->_cache = new \Memcached();
         $this->_cache->addServers($config['servers']);
-        
+
         $compression = false;
         if (isset($config['compression'])){
             $compression = !!$config['compression'];
@@ -85,7 +85,7 @@ class Memcached implements AdapterInterface{
 	public function delete ($key){
         return $this->_cache->delete($key);
     }
-    
+
     /**
      * Increase an int cache value by $num
      * @param string $key
@@ -95,7 +95,7 @@ class Memcached implements AdapterInterface{
     public function increment($key, $num=1){
         return $this->_cache->increment($key, $num);
     }
-    
+
     /**
      * Decrease a int cache value by $num
      * @param string $key
