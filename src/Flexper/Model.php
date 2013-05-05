@@ -46,7 +46,7 @@ var_dump($engineType);
 
     public function update(array $where, array $newRecord){
     	if ($this->_engineName==self::ENGINE_MONGO){
-    		return $this->engine->insert($this->getTable(), $where, $newRecord);
+    		return $this->engine->update($this->getTable(), $where, $newRecord, array('multiple'=>true));
     	}elseif ($this->_engineName==self::ENGINE_MYSQL){
     		$query = new Query();
     		$query->table($this->getTable())
