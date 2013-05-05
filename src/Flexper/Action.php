@@ -96,7 +96,7 @@ abstract class Action{
     function validate(){
 		if (!empty($this->rules)){
 			foreach ($this->rules as $rule){
-				$type = array_shift($rule);
+				$type = array_shift($rule);echo "{$type}|";
 				switch ($type){
 					case self::VALID_REQUIRED:
 						foreach ($rule as $field){
@@ -127,8 +127,9 @@ abstract class Action{
 						}
 						break;
 					case self::VALID_REGEX:
-						$regex = array_shift($rule);
+						$regex = array_shift($rule);echo "<{$regex}>";
 						foreach ($rule as $field){
+							echo "<{$field}>";
 							if (!preg_match($regex, $this->request->$field)){
 								throw new ActionValidationException("field $field is not match with regex:$regex, {$this->request->$field} given");
 							}
