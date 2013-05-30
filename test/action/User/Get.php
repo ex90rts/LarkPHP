@@ -34,7 +34,7 @@ class Get extends Action{
         $response->template('users.php');
 
         $this->logger()->appDebug(array('api'=>'user/get', 'page'=>$page));
-        $this->logger()->logDebug("test");
+        $this->logger()->logDebug("test log");
     }
 
     function redirect(){
