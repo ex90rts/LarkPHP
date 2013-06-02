@@ -43,6 +43,9 @@ var mySettings = {
 
 $(document).ready(function() {
 	$("#content").markItUp(mySettings);
+	$(".newpostButton").click(
+		$(".newpostForm").submit();
+	);
 });
 </script>
 </head>
@@ -56,26 +59,24 @@ $(document).ready(function() {
 
 <div class="contentBox">
 	<div class="newpostBox">
-	<form method="post" class="newpostForm">
+	<form name="NewpostForm" method="post" class="newpostForm" action="/test/index.php?action=post/newpost">
     	<div class="newpostFormHeader">
         	<h2>Add New Post</h2>
         </div>
     	<div class="newpostFormBody">
         	<label for="title">Title</label>
-            <input autocapitalize="off" autofocus="autofocus" class="input-block" id="login_field" name="login" tabindex="1" type="text">
+            <input autocapitalize="off" autofocus="autofocus" class="input-block" id="title" name="login" tabindex="1" type="text">
             <label for="tags">Tags</label>
-            <input autocapitalize="off" autofocus="autofocus" class="input-block" id="login_field" name="login" tabindex="1" type="text">
+            <input autocapitalize="off" autofocus="autofocus" class="input-block" id="tags" name="login" tabindex="2" type="text">
             <label for="content">Content</label>
-            <textarea id="content"></textarea>
+            <textarea id="content" tabindex="3"></textarea>
             <a href="#" class="newpostButton">Submit</a>
         </div>
     </form>
     </div>
 </div>
 
-<div class="footerBox">
-	<div class="copyright">samoay.me © 20[1-5]+[0-9]+</div>
-</div>
+<?php $this->template('footer.php'); ?>
 
 </body>
 </html>
