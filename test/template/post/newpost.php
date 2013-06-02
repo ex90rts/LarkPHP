@@ -43,9 +43,9 @@ var mySettings = {
 
 $(document).ready(function() {
 	$("#content").markItUp(mySettings);
-	$(".newpostButton").click(
+	$(".newpostButton").click(function(){
 		$(".newpostForm").submit();
-	);
+	});
 });
 </script>
 </head>

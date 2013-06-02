@@ -9,9 +9,10 @@
 <script type="text/javascript" src="js/jquery-1.10.1.min.js"></script>
 <script type="text/javascript">
 $(document).ready(function() {
-	$(".loginButton").click(
+	$(".loginButton").click(function(){
+		console.log("login button clicked");
 		$(".loginForm").submit();
-	);
+	});
 });
 </script>
 </head>
