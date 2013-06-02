@@ -18,9 +18,6 @@ $(document).ready(function() {
 </head>
 
 <body>
-<!--[if lte IE 8]>
-    <div class="error chromeframe">您正在使用<strong>漏洞百出</strong>的浏览器，为了正常地访问本网站，请升级您的浏览器 <a target="_blank" href="http://browsehappy.com">立即升级</a></div>
-<![endif]-->
 
 <?php $this->template('header.php'); ?>
 

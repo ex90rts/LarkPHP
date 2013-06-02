@@ -20,7 +20,7 @@ class Uniqid{
 
     private static $_dbengine;
     
-    private static $_supportDbengines = array('mongo');
+    private static $_supportDbengines = array('mongo', 'mysql');
     
     private static function init(){
         if (!self::$_isInited){

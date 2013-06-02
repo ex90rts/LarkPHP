@@ -2,8 +2,9 @@
 $config = array(
 	'typeCode' => array(
 		'user' => '10',
-		'joke' => '11',
+		'tag' => '11',
+		'post' => '12',
 	),
-	'dbengine' => 'mongo',
+	'dbengine' => 'mysql',
 	'table' => 'Uniqid',
 );
