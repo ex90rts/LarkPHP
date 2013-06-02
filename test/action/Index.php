@@ -5,6 +5,7 @@ use Flexper\Action;
 
 class Index extends Action{
 	function execute(){
-		$textData = $this->request->data;
+		$response = $this->response;
+		$response->template('index.php');
 	}
 }
