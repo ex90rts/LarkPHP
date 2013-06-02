@@ -3,7 +3,7 @@ namespace Knock\Action\Post;
 
 use Flexper\Action;
 
-require_once 'src/Michelf/Markdown.php';
+//require_once 'src/Michelf/Markdown.php';
 use Michelf\Markdown;
 
 class Preview extends Action{
