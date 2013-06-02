@@ -127,7 +127,8 @@ class Env{
 	        $classPath = implode('/', $classParts);
 	        $filePath = self::getOption('projectPath') . DIRECTORY_SEPARATOR . self::getOption('project') . DIRECTORY_SEPARATOR . strtolower($subNamespace) . DIRECTORY_SEPARATOR .$classPath . '.php';
 	    }else{
-	        throw new NoAutoloaderDefinedException(sprintf('try to autoload class named %s', $className));
+	    	$classPath = str_replace('\\', DIRECTORY_SEPARATOR, $className);
+	        $filePath = self::getOption('libPath') . DIRECTORY_SEPARATOR . $classPath . '.php';
 	    }
 
 	    if (file_exists($filePath)){
