@@ -8,7 +8,7 @@ class Newpost extends Action{
 		$request = $this->request;
 		$response = $this->response;
 		
-		if (empty($_POST['NewpostForm'])){
+		if (empty($request->title) || empty($request->content)){
 			$response = $this->response;
 			$response->tab = 'LOGIN';
 			$response->template('post/newpost.php');

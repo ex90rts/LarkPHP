@@ -8,7 +8,7 @@ class Login extends Action{
 		$request = $this->request;
 		$response = $this->response;
 		print_r($_POST);
-		if (empty($_POST['LoginForm'])){
+		if (empty($request->username) || empty($request->password)){
 			$response->tab = 'LOGIN';
 			$response->template('user/login.php');
 		}else{
