@@ -5,7 +5,7 @@ use Flexper\Action;
 
 class Login extends Action{
 	function execute(){
-		if (empty($this->request['LoginForm'])){
+		if (empty($_POST['LoginForm'])){
 			$response = $this->response;
 			$response->tab = 'LOGIN';
 			$response->template('user/login.php');
