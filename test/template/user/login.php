@@ -6,6 +6,14 @@
 <link rel="stylesheet" href="css/style.css" />
 <meta name="description" content="Build software better, together." />
 <title></title>
+<script type="text/javascript" src="js/jquery-1.10.1.min.js"></script>
+<script type="text/javascript">
+$(document).ready(function() {
+	$(".loginButton").click(
+		$(".loginForm").submit();
+	);
+});
+</script>
 </head>
 
 <body>
