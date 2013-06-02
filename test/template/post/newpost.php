@@ -13,7 +13,7 @@
 <script type="text/javascript" >
 var mySettings = {
     nameSpace:          'markdown', // Useful to prevent multi-instances CSS conflict
-    previewParserPath:  '~/sets/markdown/preview.php',
+    previewParserPath:  '/test/index.php?action=post/preview',
     onShiftEnter:       {keepDefault:false, openWith:'\n\n'},
     markupSet: [
         {name:'First Level Heading', key:"1", placeHolder:'Your title here...', closeWith:function(markItUp) { return miu.markdownTitle(markItUp, '=') } },
