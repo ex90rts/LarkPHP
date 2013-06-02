@@ -10,6 +10,8 @@ use Flexper\Env;
 use Flexper\Action;
 
 class Get extends Action{
+	var $Samoay;
+	
     function permission(){
         return true;
     }
