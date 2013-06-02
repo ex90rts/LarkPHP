@@ -7,7 +7,7 @@ p{ line-height: 1.5em;}
 .headerBox{ height:85px;border-bottom:1px solid #e5e5e5;}
 .headerContent{width:960px; margin:0 auto;}
 .logoBox {height:50px; width:204px; float:left; background-image: url(../images/logo.png); margin-top:20px;}
-.searchInput {width:180px; margin-top:30px; margin-left:10px; height:25px;}
+.searchInput {width:180px; margin-top:30px; margin-left:10px; height:25px; float:left;}
 .tabsBox {height:50px; width:550px; float:right; margin-top:28px;}
 .tabs{ list-style:none; }
 .tabs li{ height:25px; width:100px; display:block; float:left; margin-left:10px; text-align:center; padding-top:8px; background-color:#000; color:#FFF; vertical-align:middle;}
