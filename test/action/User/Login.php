@@ -7,7 +7,7 @@ class Login extends Action{
 	function execute(){
 		$request = $this->request;
 		$response = $this->response;
-		
+		print_r($_POST);
 		if (empty($_POST['LoginForm'])){
 			$response->tab = 'LOGIN';
 			$response->template('user/login.php');
