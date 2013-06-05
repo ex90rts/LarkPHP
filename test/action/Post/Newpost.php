@@ -29,7 +29,7 @@ class Newpost extends Action{
 			$postUid = $uniqid->create(Constants::UNIQID_TYPE_POST);
 			
 			$tags = str_replace(array('，', ';', '；', ' '), ',', $tags);
-			$tagsArray = explode(',', $tags);print_r($tagsArray);die;
+			$tagsArray = explode(',', $tags);
 			
 			$record = array(
 				'uid' => $postUid,
@@ -56,7 +56,7 @@ class Newpost extends Action{
 					'tag' => $tag,
 				);
 				$query = new Query();
-				$query->table('Tags')->insert($record);
+				$query->table('Tags')->insert($record);echo $query;
 				$mysql->exec($query);
 				
 				$record = array(
@@ -64,7 +64,7 @@ class Newpost extends Action{
 					'tagUid' => $tagUid,
 				);
 				$query = new Query();
-				$query->table('Tagconnects')->insert($record);
+				$query->table('Tagconnects')->insert($record);echo $query;die;
 				$mysql->exec($query);
 			}
 			
