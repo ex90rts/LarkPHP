@@ -65,6 +65,7 @@ class Newpost extends Action{
 				);
 				$query = new Query();
 				$query->table('Tagconnects')->insert($record);
+				$mysql->exec($query);
 			}
 			
 			$this->response->redirect('goto', "/test/index.php?action=post/view&uid={$postUid}");

@@ -18,5 +18,6 @@ class View extends Action{
 		$article = $mysql->exec($query);
 		$response->article = $article;
 		$response->htmlContent = Markdown::defaultTransform($article['content']);
+		$response->template('post/view.php');
 	}
 }
