@@ -6,6 +6,7 @@ use Flexper\Env;
 use Flexper\Constants;
 use Flexper\Util;
 use Flexper\Mysql\Query;
+use Flexper\Uniqid;
 
 class Newpost extends Action{
 	function execute(){
@@ -24,7 +25,7 @@ class Newpost extends Action{
 			$mysql = Env::getInstance('\Flexper\Mysql');
 			$mysql->transaction();
 			
-			$uniqid = Env::getInstance('\Flexper\Uniqid');
+			$uniqid = new Uniqid();
 			$postUid = $uniqid->create(Constants::UNIQID_TYPE_POST);
 			
 			$tags = str_replace(array('，', ';', '；', ' '), ',', $tags);
