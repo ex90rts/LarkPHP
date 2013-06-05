@@ -29,7 +29,7 @@ class Newpost extends Action{
 			$postUid = $uniqid->create(Constants::UNIQID_TYPE_POST);
 			
 			$tags = str_replace(array('，', ';', '；', ' '), ',', $tags);
-			$tagsArray = explode(',', $tags);
+			$tagsArray = explode(',', $tags);print_r($tagsArray);die;
 			
 			$record = array(
 				'uid' => $postUid,
