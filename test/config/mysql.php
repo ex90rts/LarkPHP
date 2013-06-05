@@ -17,7 +17,13 @@ $config = array(
 			'server'   => array('db1'),
 		),
 		'Posts' => array(
-				'server'   => array('db1'),
+			'server'   => array('db1'),
+		),
+		'Tags' => array(
+			'server'   => array('db1'),
+		),
+		'Tagconnects' => array(
+			'server'   => array('db1'),
 		),
 	),
 );
