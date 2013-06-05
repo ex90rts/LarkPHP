@@ -6,7 +6,7 @@
 <link rel="stylesheet" href="css/style.css" />
 <meta name="description" content="Build software better, together." />
 <script type="text/javascript" src="libs/highlight.js/highlight.pack.js"></script>
-<link rel="stylesheet" type="text/css" href="libs/highlight.js/styles/sunburst.css" />
+<link rel="stylesheet" type="text/css" href="libs/highlight.js/styles/monokai.css" />
 <script>hljs.initHighlightingOnLoad();</script>
 <title></title>
 </head>
