@@ -14,10 +14,31 @@ class View extends Action{
 		$uid = $request->uid;
 		$mysql = Env::getInstance('\Flexper\Mysql');
 		$query = new Query();
-		$query->table('Posts')->select();
+		$query->table('Posts')->select()->where(array('uid'=>$request->uid));
 		$article = $mysql->exec($query);
-		$response->article = $article[0];
-		$response->htmlContent = Markdown::defaultTransform($article[0]['content']);
-		$response->template('post/view.php');
+		if ($article){
+			$article = $article[0];
+			$response->title = $article['title'];
+			$response->htmlContent = Markdown::defaultTransform($article['content']);
+			$response->tags = array();
+			
+			$query = new Query();
+			$query->table('Tagconnects')->select()->where(array('postUid'=>$request->uid));
+			$connects = $mysql->exec($query);
+			if ($connects){
+				foreach ($connects as $connect){
+					$query = new Query();
+					$query->table('Tags')->select()->where(array('uid'=>$connect['tagUid']));
+					$tag = $mysql->exec($query);
+					if ($tag){
+						$response->tags[] = current($tag);
+					}
+				}
+			}
+			
+			$response->template('post/view.php');
+		}else{
+			echo "Post not found";
+		}
 	}
 }

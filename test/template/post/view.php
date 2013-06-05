@@ -5,6 +5,8 @@
 <link rel="icon" type="image/x-icon" href="/favicon.ico" />
 <link rel="stylesheet" href="css/style.css" />
 <meta name="description" content="Build software better, together." />
+<script type="text/javascript" src="libs/highlight.js/highlight.pack.js"></script>
+<link rel="stylesheet" type="text/css" href="libs/highlight.js/styles/sunburst.css" />
 <title></title>
 </head>
 
@@ -15,8 +17,19 @@
 <div class="contentBox">
 	<div class="contentLeft">
     	<div class="articleNode">
-        	<h3><?php echo $this->article['title']; ?></h3>
-        	<p><?php echo $this->htmlContent;?></p>
+        	<div class="articleTitle"><div class="articleID">#<?php echo $this->article['id']; ?></div><h3><a href="#"><?php echo $this->article['title']; ?></a></h3></div>
+            <div class="articleContent">
+                <?php echo $this->htmlContent;?>
+            </div>
+            <div class="articleInfo">
+                <div class="articleTags">
+                	<?php foreach ($this->tags as $tag){?>
+                    <a href="/test/index.php?action=post/list/<?php echo $tag['uid'];?>"><?php echo $tag['tag'];?></a>
+                    <?php }?>
+                </div>
+                <div class="articleTime">2013-06-05 22:00</div>
+                <div style="clear:both"></div>
+            </div>
     	</div>
     </div>
     
