@@ -24,11 +24,18 @@ p{ line-height: 1.5em;}
 .contentBox .contentLeft{width:690px; float:left;}
 .contentBox .contentRight{width:240px; float:right;}
 
-.articleNode { border-bottom: 1px solid #ddd; padding:10px 0;}
-.articleNode h3 { height:25px;}
-.articleTitle { color:#000; text-decoration:none;}
-.articleTitle:hover{ color:#009a61; text-decoration:underline;}
+.articleNode { border-bottom: 1px solid #ddd; padding:10px 0 5px 0;}
 .articleNode p{ line-height:1.8em;}
+.articleTitle { height:25px;border-bottom: 1px dotted #ddd; margin-bottom:5px;}
+.articleTitle a { color:#000; text-decoration:none;}
+.articleTitle a:hover{ color:#009a61; text-decoration:underline;}
+.articleTitle .articleID{ width:50px; float:right; color:#F60; font-weight:700; font-size:16px; text-align:right;}
+.articleContent *{ color:#333;}
+.articleInfo{}
+.articleInfo .articleTags{ width:400px; float:left;}
+.articleTags a{ padding:3px 5px 5px 5px; margin:2px 2px 2px 0; line-height:2.4em; background-color:#000; color:#0C6; font-size:12px; text-decoration:none; border-bottom:1px solid #b3cee1; border-right:1px solid #b3cee1;}
+.articleTags a:hover{}
+.articleInfo .articleTime{width:250px; float:right;padding:6px 5px 0px 5px; margin:2px 2px 2px 0; text-align:right; font-size:14px; color:#060;}
 
 .sideTitle { margin:10px 0; color:#060;border-bottom:1px dotted #ddd; padding-bottom:7px; }
 .snsLinks{ margin-bottom:20px;}
@@ -42,11 +49,13 @@ p{ line-height: 1.5em;}
 .newList ul{ list-style:none;}
 .newList ul li{ height:30px; line-height:30px; overflow:hidden;}
 .newList ul li a{ color:#333; font-size:14px; text-decoration:none;}
+.newList ul li a:hover{color:#009a61; text-decoration:underline;}
 
 .hotList{ margin-bottom:20px;}
 .hotList ul{ list-style:none;}
 .hotList ul li{ height:25px; line-height:25px; overflow:hidden;}
 .hotList ul li a{ color:#333; font-size:14px; text-decoration:none;}
+.hotList ul li a:hover{color:#009a61; text-decoration:underline;}
 
 /* Login Page */
 .loginBox { width:400px; margin:60px auto;}
