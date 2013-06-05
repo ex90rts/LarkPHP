@@ -264,6 +264,7 @@ class Mysql{
 
         $mysqli = $this->_connPool[$connKey];
 
+        $mysqli->autocommit(true);
         if ($this->_isTrans && $this->_holdQueries==0){
             $mysqli->autocommit(false);
         }
