@@ -66,7 +66,7 @@ $(document).ready(function() {
             <label for="tags">Tags</label>
             <input autocapitalize="off" autofocus="autofocus" class="input-block" id="tags" name="login" tabindex="2" type="text">
             <label for="content">Content</label>
-            <textarea id="content" tabindex="3"></textarea>
+            <textarea id="content" name="content" tabindex="3"></textarea>
             <a href="#" class="newpostButton">Submit</a>
         </div>
     </form>
