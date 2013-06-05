@@ -15,9 +15,9 @@ class View extends Action{
 		$mysql = Env::getInstance('\Flexper\Mysql');
 		$query = new Query();
 		$query->table('Posts')->select();
-		$article = $mysql->exec($query);print_r($article);die;
-		$response->article = $article;
-		$response->htmlContent = Markdown::defaultTransform($article['content']);
+		$article = $mysql->exec($query);
+		$response->article = $article[0];
+		$response->htmlContent = Markdown::defaultTransform($article[0]['content']);
 		$response->template('post/view.php');
 	}
 }
