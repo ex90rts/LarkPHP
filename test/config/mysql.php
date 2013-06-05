@@ -13,8 +13,11 @@ $config = array(
 		'Users' => array(
 			'server'   => array('db1'),
 		),
-		'JokeIndex' => array(
+		'Uniqid' => array(
 			'server'   => array('db1'),
+		),
+		'Posts' => array(
+				'server'   => array('db1'),
 		),
 	),
 );
