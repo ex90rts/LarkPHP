@@ -17,7 +17,7 @@
 <div class="contentBox">
 	<div class="contentLeft">
     	<div class="articleNode">
-        	<div class="articleTitle"><div class="articleID">#<?php echo $this->article['id']; ?></div><h3><a href="#"><?php echo $this->article['title']; ?></a></h3></div>
+        	<div class="articleTitle"><div class="articleID">#<?php echo $this->id; ?></div><h3><a href="#"><?php echo $this->title; ?></a></h3></div>
             <div class="articleContent">
                 <?php echo $this->htmlContent;?>
             </div>

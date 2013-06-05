@@ -18,6 +18,7 @@ class View extends Action{
 		$article = $mysql->exec($query);
 		if ($article){
 			$article = $article[0];
+			$response->id = $article['id'];
 			$response->title = $article['title'];
 			$response->htmlContent = Markdown::defaultTransform($article['content']);
 			$response->tags = array();
