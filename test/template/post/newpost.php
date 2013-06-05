@@ -62,9 +62,9 @@ $(document).ready(function() {
         </div>
     	<div class="newpostFormBody">
         	<label for="title">Title</label>
-            <input autocapitalize="off" autofocus="autofocus" class="input-block" id="title" name="title" tabindex="1" type="text">
+            <input autofocus="autofocus" class="input-block" id="title" name="title" tabindex="1" />
             <label for="tags">Tags</label>
-            <input autocapitalize="off" autofocus="autofocus" class="input-block" id="tags" name="tags" tabindex="2" type="text">
+            <input class="input-block" id="tags" name="tags" tabindex="2" />
             <label for="content">Content</label>
             <textarea id="content" name="content" tabindex="3"></textarea>
             <a href="#" class="newpostButton">Submit</a>
