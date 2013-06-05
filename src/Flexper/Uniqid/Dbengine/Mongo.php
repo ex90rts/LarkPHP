@@ -2,7 +2,6 @@
 namespace Flexper\Uniqid\Dbengine;
 
 use Flexper\Util;
-
 use Flexper\Env;
 use Flexper\Uniqid\DbengineInterface;
 

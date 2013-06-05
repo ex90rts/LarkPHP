@@ -4,6 +4,7 @@ namespace Flexper\Uniqid\Dbengine;
 use Flexper\Mysql\Query;
 use Flexper\Env;
 use Flexper\Util;
+use Flexper\Uniqid\DbengineInterface;
 
 class Mysql implements DbengineInterface{
     
