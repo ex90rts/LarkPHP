@@ -30,7 +30,6 @@ p{ line-height: 1.5em;}
 .articleTitle a { color:#000; text-decoration:none;}
 .articleTitle a:hover{ color:#009a61; text-decoration:underline;}
 .articleTitle .articleID{ width:50px; float:right; color:#F60; font-weight:700; font-size:16px; text-align:right;}
-.articleContent *{ color:#333;}
 .articleInfo{}
 .articleInfo .articleTags{ width:400px; float:left;}
 .articleTags a{ padding:3px 5px 5px 5px; margin:2px 2px 2px 0; line-height:2.4em; background-color:#000; color:#0C6; font-size:12px; text-decoration:none; border-bottom:1px solid #b3cee1; border-right:1px solid #b3cee1;}
