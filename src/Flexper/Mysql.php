@@ -284,7 +284,11 @@ class Mysql{
         $result = $mysqli->query($sql);
         if ($query->action==Query::ACT_SELECT){
             if ($result instanceof \mysqli_result){
-                $result = $result->fetch_all();
+                $tempArr = array();
+                while ($row = $result->fetch_assoc()) {
+                	$tempArr[] = $row;
+                }
+                $result = $tempArr;
             }
         }elseif ($query->action==Query::ACT_INSERT){
             if ($query->insertId){
