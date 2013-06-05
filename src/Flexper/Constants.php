@@ -12,7 +12,7 @@ class Constants{
     const REDIRECT_NEXTACTION = 'redirect_nextaction';
     
     /*Uniqid Types*/
-    const UNIQID_TYPE_USER = '10';
-    const UNIQID_TYPE_POST = '11';
-    const UNIQID_TYPE_TAG = '12';
+    const UNIQID_TYPE_USER = 'user';
+    const UNIQID_TYPE_POST = 'post';
+    const UNIQID_TYPE_TAG = 'tag';
 }
