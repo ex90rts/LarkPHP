@@ -56,7 +56,7 @@ class Newpost extends Action{
 					'tag' => $tag,
 				);
 				$query = new Query();
-				$query->table('Tags')->insert($record);echo $query;
+				$query->table('Tags')->insert($record);
 				$mysql->exec($query);
 				
 				$record = array(
@@ -64,7 +64,7 @@ class Newpost extends Action{
 					'tagUid' => $tagUid,
 				);
 				$query = new Query();
-				$query->table('Tagconnects')->insert($record);echo $query;die;
+				$query->table('Tagconnects')->insert($record);
 				$mysql->exec($query);
 			}
 			
