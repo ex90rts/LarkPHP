@@ -1,5 +1,5 @@
 <?php
-namespace Flexper\Uniqid;
+namespace Flexper\Uniqid\Dbengine;
 
 use Flexper\Mysql\Query;
 use Flexper\Env;
