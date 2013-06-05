@@ -265,14 +265,11 @@ class Mysql{
         $mysqli = $this->_connPool[$connKey];
 
         if ($this->_isTrans && $this->_holdQueries==0){
-            echo "auto commit is false\r\n";
             $mysqli->autocommit(false);
         }
         if ($this->_isTrans && !empty($this->_lastConnKey) && $connKey!=$this->_lastConnKey){
             throw new \Exception('not support transactions cross different db servers');
         }
-
-        echo "transaction status:";var_dump($this->_isTrans);
 
         $this->_lastConnKey = $connKey;
         $this->_lastConn = $mysqli;
@@ -283,7 +280,7 @@ class Mysql{
         foreach ($mapTables as $mapTable){
             $sql = str_replace("@{$mapTable}", $realTables[$mapTable], $sql);
         }
-        echo $sql."\r\n";
+        
         $result = $mysqli->query($sql);
         if ($query->action==Query::ACT_SELECT){
             if ($result instanceof \mysqli_result){
@@ -326,8 +323,6 @@ class Mysql{
             throw new MysqlNoEnabledTransException();
         }
 
-        echo "Commit\r\n";
-
         $this->_isTrans = false;
         $this->_holdQueries = 0;
 
@@ -346,8 +341,6 @@ class Mysql{
         if (!$this->_isTrans){
             throw new MysqlNoEnabledTransException();
         }
-
-        echo "Rollback\r\n";
 
         $this->_isTrans = false;
         $this->_holdQueries = 0;
