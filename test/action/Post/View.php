@@ -21,21 +21,22 @@ class View extends Action{
 			$response->id = $article['id'];
 			$response->title = $article['title'];
 			$response->htmlContent = Markdown::defaultTransform($article['content']);
-			$response->tags = array();
 			
+			$tags = array();
 			$query = new Query();
-			$query->table('Tagconnects')->select()->where(array('postUid'=>$request->uid));echo $query;
-			$connects = $mysql->exec($query);var_dump($connects);
+			$query->table('Tagconnects')->select()->where(array('postUid'=>$request->uid));
+			$connects = $mysql->exec($query);
 			if ($connects){
 				foreach ($connects as $connect){
 					$query = new Query();
-					$query->table('Tags')->select()->where(array('uid'=>$connect['tagUid']));echo $query;
-					$tag = $mysql->exec($query);
+					$query->table('Tags')->select()->where(array('uid'=>$connect['tagUid']));
+					$tag = $mysql->exec($query);var_dump($tag);
 					if ($tag){
-						$response->tags[] = current($tag);
+						$tags[] = current($tag);
 					}
 				}
 			}
+			$response->tags = $tags;
 			
 			$response->template('post/view.php');
 		}else{
