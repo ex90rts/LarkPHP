@@ -2,11 +2,11 @@
 $config = array(
 	'server' => array(
 		'db1' => array(
-			'name' => 'Knock',
+			'name' => 'blog',
 			'host' => '127.0.0.1',
 			'port' => '3306',
-			'user' => 'admin',
-			'pass' => '123456',
+			'user' => 'root',
+			'pass' => '827465',
 		),
 	),
 	'tables' => array(
