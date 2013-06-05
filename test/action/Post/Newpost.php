@@ -39,7 +39,7 @@ class Newpost extends Action{
 			);
 			
 			$query = new Query(array('insertId'=>true));
-			$query = $query->table('Posts')->insert($record);echo $query->toString();die;
+			$query = $query->table('Posts')->insert($record);echo $query;die;
 			$res = $mysql->exec($query);
 			if (!$res){
 				$mysql->rollback();
