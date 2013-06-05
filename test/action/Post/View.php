@@ -30,7 +30,7 @@ class View extends Action{
 				foreach ($connects as $connect){
 					$query = new Query();
 					$query->table('Tags')->select()->where(array('uid'=>$connect['tagUid']));
-					$tag = $mysql->exec($query);var_dump($tag);
+					$tag = $mysql->exec($query);
 					if ($tag){
 						$tags[] = current($tag);
 					}
