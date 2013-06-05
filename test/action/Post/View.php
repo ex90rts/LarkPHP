@@ -24,12 +24,12 @@ class View extends Action{
 			$response->tags = array();
 			
 			$query = new Query();
-			$query->table('Tagconnects')->select()->where(array('postUid'=>$request->uid));
-			$connects = $mysql->exec($query);
+			$query->table('Tagconnects')->select()->where(array('postUid'=>$request->uid));echo $query;
+			$connects = $mysql->exec($query);var_dump($connects);
 			if ($connects){
 				foreach ($connects as $connect){
 					$query = new Query();
-					$query->table('Tags')->select()->where(array('uid'=>$connect['tagUid']));
+					$query->table('Tags')->select()->where(array('uid'=>$connect['tagUid']));echo $query;
 					$tag = $mysql->exec($query);
 					if ($tag){
 						$response->tags[] = current($tag);
