@@ -11,7 +11,7 @@ class Newpost extends Action{
 	function execute(){
 		$request = $this->request;
 		$response = $this->response;
-		
+		var_dump($request);die;
 		if (empty($request->title) || empty($request->content)){
 			$response = $this->response;
 			$response->tab = 'LOGIN';
