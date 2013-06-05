@@ -36,6 +36,7 @@ class Newpost extends Action{
 				'content' => $content,
 				'created' => Util::getNow(),
 			);
+			print_r($record);die;
 			$query = new Query(array('insertId'=>true));
 			$query = $query->table('Posts')->insert($record);
 			$res = $mysql->exec($query);
