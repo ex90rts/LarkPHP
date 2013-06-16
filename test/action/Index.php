@@ -20,6 +20,7 @@ class Index extends Action{
 		foreach ($posts as $post){
 			$article = array();
 			$article['id'] = $post['id'];
+			$article['uid'] = $post['uid'];
 			$article['title'] = $post['title'];
 			$article['htmlContent'] = Markdown::defaultTransform($post['content']);
 			$article['created'] = $post['created'];
