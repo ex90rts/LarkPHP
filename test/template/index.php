@@ -14,26 +14,23 @@
 
 <div class="contentBox">
 	<div class="contentLeft">
+		<?php foreach ($this->list as $post){?>
     	<div class="articleNode">
-            <div class="articleTitle"><div class="articleID">#45634</div><h3><a href="#">Nodejs擅长什么？</a></h3></div>
+            <div class="articleTitle"><div class="articleID">#<?php echo $post['id'];?></div><h3><a href="#"><?php echo $post['title'];?></a></h3></div>
             <div class="articleContent">
-                <p>Node给前端开发者打了鸡血，现在我们可以用一种语言来写前后端的程序了，但我们都要避免的一点是，当你有一把锤子，你看见什么都是钉子。
-        所以我们不应该为了使用js而js，也不要为了时髦而使用Node。我们应该搞清楚，Node适合哪些场景，在这些场景下，Node是否是更优的选择？比起某一门“正常”的服务器语言？
-        Node更擅长……Node更擅长处理并发连接。这是由Node处理连接的方法决定的。
-        Node公开宣称的目标是 “旨在提供一种简单的构建可伸缩网络程序......
-                </p>
+                <?php echo $post['htmlContent'];?>
             </div>
             <div class="articleInfo">
                 <div class="articleTags">
-                    <a href="#">PHP</a>
-                    <a href="#">Javascript</a>
-                    <a href="#">Java</a>
-                    <a href="#">MySQL</a>
+                	<?php foreach($post['tags'] as $tag){?>
+                    <a href="#<?php echo $tag['uid'];?>"><?php echo $tag['tag'];?></a>
+                    <?php }?>
                 </div>
-                <div class="articleTime">2013-06-05 22:00</div>
+                <div class="articleTime"><?php echo date('Y-m-d H:i', $post['created']);?></div>
                 <div style="clear:both"></div>
             </div>
     	</div>
+    	<?php }?>
     </div>
     
     <div class="contentRight">
