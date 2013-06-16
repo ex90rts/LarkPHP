@@ -11,8 +11,6 @@ class Index extends Action{
 		$response = $this->response;
 		$response->tab = 'HOME';
 		
-		$Posts = $this->model('Posts');
-		
 		$mysql = Env::getInstance('\Flexper\Mysql');
 		$query = new Query();
 		$query->table('Posts')->select()->order(array('id'=>'DESC'))->limit(10);
