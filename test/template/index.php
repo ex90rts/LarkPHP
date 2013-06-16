@@ -16,17 +16,30 @@
 	<div class="contentLeft">
 		<?php foreach ($this->list as $post){?>
     	<div class="articleNode">
-            <div class="articleTitle"><div class="articleID">#<?php echo $post['id'];?></div><h3><a href="/test/index.php?action=post/view&uid=<?php echo $post['uid'];?>"><?php echo $post['title'];?></a></h3></div>
+            <div class="articleTitle">
+            	<img class="mainTag" src="images/tags/php.png" border="0" />
+                <i class="line"></i>
+                <div class="titleRight">
+                    <h3><a href="/test/index.php?action=post/view&uid=<?php echo $post['uid'];?>"><?php echo $post['title'];?></a></h3>
+                    <div class="articleTags">
+                    	<?php foreach($post['tags'] as $tag){?><a href="/test/index.php?action=post/tag&uid=<?php echo $tag['uid'];?>"><?php echo $tag['tag'];?></a><span>/</span><?php }?><a class="created"><?php echo date('Y.m.d', $post['created']);?></a>
+                    </div>
+                </div>
+                <div class="commentNum">99</div>
+                <div style="clear:both"></div>
+            </div>
             <div class="articleContent">
                 <?php echo $post['htmlContent'];?>
             </div>
             <div class="articleInfo">
-                <div class="articleTags">
-                	<?php foreach($post['tags'] as $tag){?>
-                    <a href="#<?php echo $tag['uid'];?>"><?php echo $tag['tag'];?></a>
-                    <?php }?>
+                <div class="reviews">
+                	<div class="review-good">12</div>
+                    <div class="review-bad">2</div>
+                    <div style="clear:both"></div>
                 </div>
-                <div class="articleTime"><?php echo date('Y-m-d H:i', $post['created']);?></div>
+                <div class="readmore">
+                	<a href="/test/index.php?action=post/view&uid=<?php echo $post['uid'];?>">阅读全文</a>
+                </div>
                 <div style="clear:both"></div>
             </div>
     	</div>
@@ -36,12 +49,11 @@
     <div class="contentRight">
         <h3 class="sideTitle">我的连接</h3>
         <div class="snsLinks">
-        	<a href="#"><img src="images/sns/weibo-small.png" border="0" /></a>
-            <a href="#"><img src="images/sns/facebook-small.png" border="0" /></a>
-            <a href="#"><img src="images/sns/twitter-small.png" border="0" /></a>
-            <a href="#"><img src="images/sns/github-small.png" border="0" /></a>
-            <a href="#"><img src="images/sns/weibo-small.png" border="0" /></a>
-            <a href="#"><img src="images/sns/weibo-small.png" border="0" /></a>
+        	<a href="http://www.weibo.com/samoay" target="_blank"><img src="images/sns/weibo-small.png" border="0" /></a>
+            <a href="http://www.facebook.com/Samoay" target="_blank"><img src="images/sns/facebook-small.png" border="0" /></a>
+            <a href="https://twitter.com/Samoay" target="_blank"><img src="images/sns/twitter-small.png" border="0" /></a>
+            <a href="https://github.com/samoay" target="_blank"><img src="images/sns/github-small.png" border="0" /></a>
+            <a href="https://plus.google.com/116034800456010545162" target="_blank"><img src="images/sns/google-plus-small.png" border="0" /></a>
             <div style="clear:both"></div>
         </div>
         

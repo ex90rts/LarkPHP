@@ -24,21 +24,32 @@ p{ line-height: 1.5em;}
 .contentBox .contentLeft{width:690px; float:left;}
 .contentBox .contentRight{width:240px; float:right;}
 
-.articleNode { border-bottom: 1px solid #ddd; padding:10px 0 5px 0;}
-.articleNode p{ line-height:1.8em;}
-.articleTitle { height:25px;border-bottom: 1px dotted #ddd; margin-bottom:5px;}
-.articleTitle a { color:#000; text-decoration:none;}
+.articleNode { padding:10px 0 5px 0; background:url(../images/article_line.png) center bottom no-repeat; padding-bottom:20px;}
+.articleNode p{ line-height:1.5em; margin-bottom:20px; text-indent:2em;}
+.articleTitle { height:65px;border-bottom: 1px dotted #ddd; margin-bottom:5px;}
+.articleTitle .mainTag { border:#999 1px solid; float:left; }
+.articleTitle .titleRight{ float:left; width:500px;}
+.articleTitle h3{ font-size:24px; }
+.articleTitle a {color:#000; text-decoration:none;}
 .articleTitle a:hover{ color:#009a61;}
-.articleTitle .articleID{ width:50px; float:right; color:#F60; font-weight:700; font-size:16px; text-align:right;}
+.articleTitle .line{float:left;width:1px;height:50px;line-height:1px;font-size:1px;margin:2px 9px 0 10px;_margin:2px 6px 0 10px;overflow:hidden;background:#d7d7d7;}
+.articleTitle .articleTags{ margin-top:6px; font-size:12px; }
+.articleTitle .articleTags a{text-decoration:underline;}
+.articleTitle .articleTags a.created{ text-decoration:none; color:#666}
+.articleTitle .articleTags span{ color:#999; padding:0 3px;}
+.articleTitle .commentNum{ float:right; width:50px; height:40px; margin-top:5px; text-align:center; padding:7px 0; background:url(../images/comment-num.png) 0 0 no-repeat; font-size:18px; font-weight:700; color:#FF0;}
 .articleInfo{}
-.articleInfo .articleTags{ width:400px; float:left;}
-.articleTags a{  border:1px solid #CCC; height:18px; padding:5px 5px 2px 5px; font-size:12px; margin:5px 5px 0 0; float:left; text-decoration:none; color:#333; border-radius:2px; background-color:#E1FFF0;}
-.articleTags a:hover{ color:#009a61; border:#666 1px solid;}
-.articleInfo .articleTime{width:250px; float:right;padding:6px 5px 0px 5px; margin:2px 2px 2px 0; text-align:right; font-size:14px; color:#060;}
+.articleInfo .articleTags{ margin-top:10px;}
+.articleTags a{ color:#333;}
+.articleTags a:hover{}
+.articleInfo .reviews{ width:500px; float:left;}
+.articleInfo .reviews .review-good{ height:26px; line-height:26px; width:20px; padding-left:32px; background:url(../images/reviews-bg.png) 5px 0px no-repeat; float:left; color:#060;}
+.articleInfo .reviews .review-bad{ height:26px; line-height:26px; width:20px; padding-left:32px; background:url(../images/reviews-bg.png) 5px -50px no-repeat; float:left; color:#060;}
+.articleInfo .readmore{ width:60px; float:right; line-height:30px;}
 
 .sideTitle { margin:10px 0; color:#060;border-bottom:1px dotted #ddd; padding-bottom:7px; }
 .snsLinks{ margin-bottom:20px;}
-.snsLinks a{ float:left; margin-left:5px;}
+.snsLinks a{ float:left; margin-right:5px;}
 
 .tagCloud a { border:1px solid #CCC; height:18px; padding:5px 5px 2px 5px; font-size:12px; margin:5px 5px 0 0; float:left; text-decoration:none; color:#333; border-radius:2px; background-color:#E1FFF0;}
 .tagCloud{ margin-bottom:20px;}
