@@ -39,6 +39,8 @@ class Index extends Action{
 				}
 			}
 			$article['tags'] = $tags;
+			
+			$list[] = $article;
 		}
 		
 		$response->list = $list;
