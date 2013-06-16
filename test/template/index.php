@@ -16,7 +16,7 @@
 	<div class="contentLeft">
 		<?php foreach ($this->list as $post){?>
     	<div class="articleNode">
-            <div class="articleTitle"><div class="articleID">#<?php echo $post['id'];?></div><h3><a href="#"><?php echo $post['title'];?></a></h3></div>
+            <div class="articleTitle"><div class="articleID">#<?php echo $post['id'];?></div><h3><a href="/test/index.php?action=post/view&uid=<?php echo $post['uid'];?>"><?php echo $post['title'];?></a></h3></div>
             <div class="articleContent">
                 <?php echo $post['htmlContent'];?>
             </div>

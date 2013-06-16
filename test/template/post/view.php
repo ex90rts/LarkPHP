@@ -25,7 +25,7 @@
             <div class="articleInfo">
                 <div class="articleTags">
                 	<?php foreach ($this->tags as $tag){?>
-                    <a href="/test/index.php?action=post/list/<?php echo $tag['uid'];?>"><?php echo $tag['tag'];?></a>
+                    <a href="/test/index.php?action=post/list&tag=<?php echo $tag['uid'];?>"><?php echo $tag['tag'];?></a>
                     <?php }?>
                 </div>
                 <div class="articleTime">2013-06-05 22:00</div>

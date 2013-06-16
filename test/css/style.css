@@ -28,33 +28,33 @@ p{ line-height: 1.5em;}
 .articleNode p{ line-height:1.8em;}
 .articleTitle { height:25px;border-bottom: 1px dotted #ddd; margin-bottom:5px;}
 .articleTitle a { color:#000; text-decoration:none;}
-.articleTitle a:hover{ color:#009a61; text-decoration:underline;}
+.articleTitle a:hover{ color:#009a61;}
 .articleTitle .articleID{ width:50px; float:right; color:#F60; font-weight:700; font-size:16px; text-align:right;}
 .articleInfo{}
 .articleInfo .articleTags{ width:400px; float:left;}
-.articleTags a{ padding:3px 5px 5px 5px; margin:2px 2px 2px 0; line-height:2.4em; background-color:#000; color:#0C6; font-size:12px; text-decoration:none; border-bottom:1px solid #b3cee1; border-right:1px solid #b3cee1;}
-.articleTags a:hover{}
+.articleTags a{  border:1px solid #CCC; height:18px; padding:5px 5px 2px 5px; font-size:12px; margin:5px 5px 0 0; float:left; text-decoration:none; color:#333; border-radius:2px; background-color:#E1FFF0;}
+.articleTags a:hover{ color:#009a61; border:#666 1px solid;}
 .articleInfo .articleTime{width:250px; float:right;padding:6px 5px 0px 5px; margin:2px 2px 2px 0; text-align:right; font-size:14px; color:#060;}
 
 .sideTitle { margin:10px 0; color:#060;border-bottom:1px dotted #ddd; padding-bottom:7px; }
 .snsLinks{ margin-bottom:20px;}
 .snsLinks a{ float:left; margin-left:5px;}
 
-.tagCloud a { border:1px solid #CCC; height:18px; padding:5px 5px 2px 5px; font-size:12px; margin:5px 0 0 5px; float:left; text-decoration:none; color:#666; border-radius:2px;}
+.tagCloud a { border:1px solid #CCC; height:18px; padding:5px 5px 2px 5px; font-size:12px; margin:5px 5px 0 0; float:left; text-decoration:none; color:#333; border-radius:2px; background-color:#E1FFF0;}
 .tagCloud{ margin-bottom:20px;}
-.tagCloud a:hover{}
+.tagCloud a:hover{ color:#009a61; border:#666 1px solid;}
 
 .newList{  margin-bottom:20px;}
 .newList ul{ list-style:none;}
 .newList ul li{ height:30px; line-height:30px; overflow:hidden;}
 .newList ul li a{ color:#333; font-size:14px; text-decoration:none;}
-.newList ul li a:hover{color:#009a61; text-decoration:underline;}
+.newList ul li a:hover{color:#009a61;}
 
 .hotList{ margin-bottom:20px;}
 .hotList ul{ list-style:none;}
 .hotList ul li{ height:25px; line-height:25px; overflow:hidden;}
 .hotList ul li a{ color:#333; font-size:14px; text-decoration:none;}
-.hotList ul li a:hover{color:#009a61; text-decoration:underline;}
+.hotList ul li a:hover{color:#009a61;}
 
 /* Login Page */
 .loginBox { width:400px; margin:60px auto;}
