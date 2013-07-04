@@ -1,73 +1,115 @@
 <?php
 namespace Flexper;
 
-use Flexper\Mongo;
-use Flexper\Mysql;
-use Flexper\Mysql\Query;
+use Flexper\Model\DataHandler;
+use Flexper\Exception\ModelValidationException;
 
 abstract class Model{
 
-	const ENGINE_MYSQL = '\Flexper\Mysql';
+	const ENGINE_MYSQL = 'mysql';
 
-	const ENGINE_MONGO = '\Flexper\Mongo';
+	const ENGINE_MONGO = 'mongo';
 
     /**
      * Var for Flexper Data Engine instance
      * @var $dataEngine
      */
-    protected $engine;
+    private $engine;
 
-    private $_engineType;
-
-    public function __construct(){
-    	$engineType = $this->getEngine();
-var_dump($engineType);
-    	$this->_engineType = $engineType;
-
-        $this->engine = Env::getInstance($engineType);
-    }
-
-    function getEngine(){
-        return Env::getOption('dataEngine');
-    }
-
-    abstract function getTable();
-
-    public function insert(array $record){
-    	if ($this->_engineName==self::ENGINE_MONGO){
-    		return $this->engine->insert($this->getTable(), $record);
-    	}elseif ($this->_engineName==self::ENGINE_MYSQL){
-			$query = new Query();
-			$query->table($this->getTable())
-				->insert($record);
-			return $this->engine->exec($query);
+    public function __construct($key=''){
+    	$this->engine = DataHandler::factory(static::$engineType);
+    	if (is_int($key)){
+    		$this->findDataByID($key);
+    	}else if ($key != ''){
+    		$this->findDataByUID($key);
     	}
     }
 
-    public function update(array $where, array $newRecord){
-    	if ($this->_engineName==self::ENGINE_MONGO){
-    		return $this->engine->update($this->getTable(), $where, $newRecord, array('multiple'=>true));
-    	}elseif ($this->_engineName==self::ENGINE_MYSQL){
-    		$query = new Query();
-    		$query->table($this->getTable())
-    		->update($newRecord)
-    		->where($where);
-    		return $this->engine->exec($query);
+    private function findDataByID($id){
+    	$data = $this->engine->model($this)->findDataByID($id);
+    	if ($data){
+    		$this->loadData($data);
+    	}
+    }
+    
+    private function findDataByUID($uid){
+    	$data = $this->engine->model($this)->findDataByUID($uid);
+    	if ($data){
+    		$this->loadData($data);
     	}
     }
 
-    public function delete(array $where, $limit=false){
-    	if ($this->_engineName==self::ENGINE_MONGO){
-    		return $this->engine->remove($this->getTable(), $where);
-    	}elseif ($this->_engineName==self::ENGINE_MYSQL){
-    		$query = new Query();
-    		$query->table($this->getTable())
-    		->delete()
-    		->where($where);
-    		if ($limit){
-    			$query->limit($limit);
+    public function loadData(Array $data){
+    	$properties = get_class_vars(__CLASS__);
+    	print_r($properties);
+    	foreach ($properties as $property){
+    		if (isset($data[$property])){
+    			$this->$property = $data[$property];
     		}
-    		return $this->engine->exec($query);
     	}
+    }
+
+    public function validate(){
+    	$properties = get_class_vars(__CLASS__);
+    	print_r($properties);
+    	
+    	$rules = $this->rules;
+    	
+    	print_r($rules);
+    	
+    	foreach ($rules as $property=>$value){
+    		foreach ($value as $key=>$rule){
+    			if (is_int($key)){
+	    			switch ($rule){
+	    				case 'required':
+	    					if (empty($this->$property)){
+	    						throw new ModelValidationException("Model property {$property} is required");
+	    					}
+	    					break;
+	    				case 'int':
+	    					if (!is_int($this->$property)){
+	    						throw new ModelValidationException("Model property {$property} must be an integer");
+	    					}
+	    					break;
+	    				case 'numeric':
+	    					if (!is_numeric($this->$property)){
+	    						throw new ModelValidationException("Model property {$property} must be a number");
+	    					}
+	    					break;
+	    				case 'bool':
+	    					if (!is_bool($this->$property)){
+	    						throw new ModelValidationException("Model property {$property} must be a boolean value");
+	    					}
+	    					break;
+	    			}
+    			}else{
+    				if ($key == 'regex'){
+    					if (!preg_match($value, $this->$property)){
+    						throw new ModelValidationException("Model property {$property} value:[{$this->$property}] can not pass regex check");
+    					}
+    				}elseif ($key == 'enum' && is_array($value)){
+    					if (!in_array($this->$property, $value, true)){
+    						throw new ModelValidationException("Model property {$property} value:[{$this->$property}] not in the num list:[".implode('|', $value)."]");
+    					}
+    				}
+    			}
+    		}
+    	}
+    }
+    
+    private function perpare(){
+    	
+    }
+    
+    public function insert(){
+    	$this->engine->model($this)->insert();
+    }
+
+    public function update(){
+    	$this->engine->model($this)->update();
+    }
+
+    public function delete(){
+    	$this->engine->model($this)->delete();
     }
 }
