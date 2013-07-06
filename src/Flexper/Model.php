@@ -28,7 +28,7 @@ abstract class Model{
     	$properties = $class->getProperties(\ReflectionProperty::IS_PUBLIC);
     	$result = array();
     	foreach ($properties as $property){
-    		$result[] = $property['name'];
+    		$result[] = $property->name;
     	}
     	return $result;
     }
