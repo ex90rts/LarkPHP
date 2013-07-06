@@ -40,7 +40,7 @@ abstract class Model{
     }
 
     public function loadData(Array $data){
-    	$properties = get_class_vars(__CLASS__);
+    	$properties = get_class_vars(get_called_class());
     	print_r($properties);
     	foreach ($properties as $property){
     		if (isset($data[$property])){
@@ -50,7 +50,7 @@ abstract class Model{
     }
 
     public function validate(){
-    	$properties = get_class_vars(__CLASS__);
+    	$properties = get_class_vars(get_called_class());
     	print_r($properties);
     	
     	$rules = $this->rules;
