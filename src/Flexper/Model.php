@@ -9,6 +9,10 @@ abstract class Model{
 	const ENGINE_MYSQL = 'mysql';
 
 	const ENGINE_MONGO = 'mongo';
+	
+	private $engine;
+	
+	private $errors = array();
 
 	public function __construct($key=''){
 		$this->engine = DataHandler::factory($this->getEngineType());
@@ -58,55 +62,59 @@ abstract class Model{
     }
 
     public function validate(){
+    	$valid = true;
     	$properties = $this->getProperties();
-    	print_r($properties);
-    	
     	$rules = $this->getValidRules();
-    	
-    	print_r($rules);
-    	
     	foreach ($rules as $property=>$value){
     		foreach ($value as $key=>$rule){
     			if (is_int($key)){
 	    			switch ($rule){
 	    				case 'required':
 	    					if (empty($this->$property)){
-	    						throw new ModelValidationException("Model property {$property} is required");
+	    						$valid = false;
+	    						$this->errors[] = "Model property {$property} is required";
 	    					}
 	    					break;
 	    				case 'int':
 	    					if (!is_int($this->$property)){
-	    						throw new ModelValidationException("Model property {$property} must be an integer");
+	    						$valid = false;
+	    						$this->errors[] = "Model property {$property} must be an integer";
 	    					}
 	    					break;
 	    				case 'numeric':
 	    					if (!is_numeric($this->$property)){
-	    						throw new ModelValidationException("Model property {$property} must be a number");
+	    						$valid = false;
+	    						$this->errors[] = "Model property {$property} must be a number";
 	    					}
 	    					break;
 	    				case 'bool':
 	    					if (!is_bool($this->$property)){
-	    						throw new ModelValidationException("Model property {$property} must be a boolean value");
+	    						$valid = false;
+	    						$this->errors[] = "Model property {$property} must be a boolean value";
 	    					}
 	    					break;
 	    			}
     			}else{
     				if ($key == 'regex'){
     					if (!preg_match($value, $this->$property)){
-    						throw new ModelValidationException("Model property {$property} value:[{$this->$property}] can not pass regex check");
+    						$valid = false;
+    						$this->errors[] = "Model property {$property} value:[{$this->$property}] can not pass regex check";
     					}
     				}elseif ($key == 'enum' && is_array($value)){
     					if (!in_array($this->$property, $value, true)){
-    						throw new ModelValidationException("Model property {$property} value:[{$this->$property}] not in the num list:[".implode('|', $value)."]");
+    						$valid = false;
+    						$this->errors[] = "Model property {$property} value:[{$this->$property}] not in the num list:[".implode('|', $value)."]";
     					}
     				}
     			}
     		}
     	}
+    	
+    	return $valid;
     }
     
-    private function perpare(){
-    	
+    public function errors(){
+    	return $this->errors;
     }
     
     public function insert(){

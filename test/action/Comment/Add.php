@@ -11,12 +11,11 @@ class Add extends Action{
 		$response = $this->response;
 		
 		$uniqid = new Uniqid();
-		
+		echo "<pre>";
 		$comment = new Comment();
 		if ($request->type == 'a'){
 			$comment->uid = $uniqid->create('13');
 			$comment->title = 'New comment';
-			$comment->validate();
 		}else{
 			$data = array(
 				'uid' => '178324932493',
@@ -24,6 +23,10 @@ class Add extends Action{
 			);
 			$comment->loadData($data);
 		}
-		$comment->validate();
+		if ($comment->validate()){
+			print_r($comment->errors());
+		}
+		var_dump($comment);
+		echo "</pre>";
 	}
 }
