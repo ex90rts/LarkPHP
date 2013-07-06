@@ -1,20 +1,19 @@
 <?php
 namespace Flexper\Model;
 
-use Flexper\Mysql;
-use Flexper\Mongo;
+use Flexper\Env;
 
 class DataHandler{
 	static function factory($engineType){
 		switch ($engineType){
 			case 'mysql':
-				return new Mysql();
+				return Env::getInstance('\Flexper\Mysql');
 				break;
 			case 'mongo':
-				return new Mongo();
+				return Env::getInstance('\Flexper\Mongo');
 				break;
 			default:
-				return new Mysql();
+				return Env::getInstance('\Flexper\Mysql');
 				break;
 		}
 	}
