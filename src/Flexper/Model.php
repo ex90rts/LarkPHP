@@ -12,7 +12,7 @@ abstract class Model{
 
     private function getProperties(){
     	$class = new \ReflectionClass(get_called_class());
-    	$properties = $class->getProperties(ReflectionProperty::IS_PUBLIC);
+    	$properties = $class->getProperties(\ReflectionProperty::IS_PUBLIC);
     	return $properties;
     }
 
