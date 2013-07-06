@@ -11,7 +11,7 @@ abstract class Model{
 	const ENGINE_MONGO = 'mongo';
 
 	public function __construct($key=''){
-		$this->engine = DataHandler::factory(static::$engineType);
+		$this->engine = DataHandler::factory($this->getEngineType());
 		if (is_int($key)){
 			$this->findDataByID($key);
 		}else if ($key != ''){
@@ -19,9 +19,9 @@ abstract class Model{
 		}
 	}
 	
-	abstract function getEngineType();
+	abstract protected function getEngineType();
 	
-	abstract function getValidRules();
+	abstract protected function getValidRules();
 	
     private function getProperties(){
     	$class = new \ReflectionClass(get_called_class());
@@ -61,7 +61,7 @@ abstract class Model{
     	$properties = $this->getProperties();
     	print_r($properties);
     	
-    	$rules = $this->rules;
+    	$rules = $this->getValidRules();
     	
     	print_r($rules);
     	
