@@ -10,11 +10,11 @@ abstract class Model{
 
 	const ENGINE_MONGO = 'mongo';
 
-    /**
-     * Var for Flexper Data Engine instance
-     * @var $dataEngine
-     */
-    private $engine;
+    private function getProperties(){
+    	$class = new \ReflectionClass(get_called_class());
+    	$properties = $class->getProperties(ReflectionProperty::IS_PUBLIC);
+    	return $properties;
+    }
 
     public function __construct($key=''){
     	$this->engine = DataHandler::factory(static::$engineType);
@@ -40,7 +40,7 @@ abstract class Model{
     }
 
     public function loadData(Array $data){
-    	$properties = get_class_vars(get_called_class());
+    	$properties = $this->getProperties();
     	print_r($properties);
     	foreach ($properties as $property){
     		if (isset($data[$property])){
@@ -50,7 +50,7 @@ abstract class Model{
     }
 
     public function validate(){
-    	$properties = get_class_vars(get_called_class());
+    	$properties = $this->getProperties();
     	print_r($properties);
     	
     	$rules = $this->rules;

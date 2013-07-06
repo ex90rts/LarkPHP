@@ -16,7 +16,7 @@ class Comment extends Model{
 	public $content;
 	public $created;
 	
-	private $rules = array(
+	protected $rules = array(
 		'id' => array('required', 'int'),
 		'uid' => array('required'),
 		'username' => array('required'),
