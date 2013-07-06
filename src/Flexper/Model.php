@@ -10,19 +10,27 @@ abstract class Model{
 
 	const ENGINE_MONGO = 'mongo';
 
+	public function __construct($key=''){
+		$this->engine = DataHandler::factory(static::$engineType);
+		if (is_int($key)){
+			$this->findDataByID($key);
+		}else if ($key != ''){
+			$this->findDataByUID($key);
+		}
+	}
+	
+	abstract function getEngineType();
+	
+	abstract function getValidRules();
+	
     private function getProperties(){
     	$class = new \ReflectionClass(get_called_class());
     	$properties = $class->getProperties(\ReflectionProperty::IS_PUBLIC);
-    	return $properties;
-    }
-
-    public function __construct($key=''){
-    	$this->engine = DataHandler::factory(static::$engineType);
-    	if (is_int($key)){
-    		$this->findDataByID($key);
-    	}else if ($key != ''){
-    		$this->findDataByUID($key);
+    	$result = array();
+    	foreach ($properties as $property){
+    		$result[] = $property['name'];
     	}
+    	return $result;
     }
 
     private function findDataByID($id){
