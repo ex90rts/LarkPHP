@@ -2,7 +2,7 @@
 namespace Flexper;
 
 use Flexper\Model\DataHandler;
-use Flexper\Exception\ModelValidationException;
+use Flexper\Model\DataList;
 
 abstract class Model{
 
@@ -24,6 +24,8 @@ abstract class Model{
 	}
 	
 	abstract protected function getEngineType();
+	
+	abstract protected function getTableName();
 	
 	abstract protected function getValidRules();
 	
@@ -51,9 +53,21 @@ abstract class Model{
     	}
     }
 
+    public function findDataByFilter($filter, $sort=array(), $limit){
+    	$list = $this->engine->model($this)->findDataByFilter();
+    	if ($list){
+    		return new DataList($this, $list);
+    	}
+    	
+    	return false;
+    }
+    
+    public function findDataByPage(){
+    	
+    }
+    
     public function loadData(Array $data){
     	$properties = $this->getProperties();
-    	print_r($properties);
     	foreach ($properties as $property){
     		if (isset($data[$property])){
     			$this->$property = $data[$property];
@@ -113,10 +127,6 @@ abstract class Model{
     	return $valid;
     }
     
-    public function errors(){
-    	return $this->errors;
-    }
-    
     public function insert(){
     	$this->engine->model($this)->insert();
     }
@@ -127,5 +137,9 @@ abstract class Model{
 
     public function delete(){
     	$this->engine->model($this)->delete();
+    }
+    
+    public function errors(){
+    	return $this->errors;
     }
 }

@@ -16,6 +16,10 @@ class Comment extends Model{
 		return parent::ENGINE_MYSQL;
 	}
 	
+	protected function getTableName(){
+		return "Comments";
+	}
+	
 	protected function getValidRules(){
 		return array(
 			'id' => array('required', 'int'),

@@ -23,7 +23,7 @@ class Add extends Action{
 			);
 			$comment->loadData($data);
 		}
-		if ($comment->validate()){
+		if (!$comment->validate()){
 			print_r($comment->errors());
 		}
 		var_dump($comment);
