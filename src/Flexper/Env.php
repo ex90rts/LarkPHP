@@ -132,7 +132,7 @@ class Env{
 	    }
 
 	    if (file_exists($filePath)){
-	        require_once $filePath;
+	        require $filePath;
 	    }else{
 	        throw new PathNotFoundException(sprintf('path %s not found', $filePath));
 	    }
