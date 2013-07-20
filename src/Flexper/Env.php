@@ -5,6 +5,12 @@ use Flexper\Exception\NoAutoloaderDefinedException;
 
 use Flexper\Exception\PathNotFoundException;
 
+/**
+ * Global App Environment Manager
+ * 
+ * @author samoay
+ *
+ */
 class Env{
 	/**
 	 * The name of this framework
