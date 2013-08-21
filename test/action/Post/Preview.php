@@ -1,7 +1,7 @@
 <?php
 namespace Knock\Action\Post;
 
-use Flexper\Action;
+use Alcedoo\Action;
 use Michelf\Markdown;
 
 class Preview extends Action{

@@ -1,7 +1,7 @@
 <?php
-require_once '../src/solomophp/Env.php';
+require_once '../src/Alcedoo/Env.php';
 
-use Flexper\Env as SolomoEnv;
+use Alcedoo\Env as SolomoEnv;
 
 SolomoEnv::init();
 SolomoEnv::execute();

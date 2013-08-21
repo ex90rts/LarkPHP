@@ -1,7 +1,7 @@
 <?php
 namespace Knock\Action\User;
 
-use Flexper\Action;
+use Alcedoo\Action;
 
 class Login extends Action{
 	function execute(){

@@ -1,7 +1,7 @@
 <?php
 namespace Knock\Model;
 
-use Flexper\Model;
+use Alcedoo\Model;
 
 class Comment extends Model{
 	public $id;

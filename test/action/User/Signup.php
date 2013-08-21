@@ -1,9 +1,9 @@
 <?php
 namespace Knock\Action\User;
 
-use Flexper\Env;
-use Flexper\Action;
-use Flexper\Constants;
+use Alcedoo\Env;
+use Alcedoo\Action;
+use Alcedoo\Constants;
 
 class Signup extends Action{
 

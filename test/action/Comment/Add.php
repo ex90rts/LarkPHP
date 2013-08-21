@@ -1,9 +1,9 @@
 <?php
 namespace Knock\Action\Comment;
 
-use Flexper\Action;
+use Alcedoo\Action;
 use Knock\Model\Comment;
-use Flexper\Uniqid;
+use Alcedoo\Uniqid;
 
 class Add extends Action{
 	function execute(){

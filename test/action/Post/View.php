@@ -1,10 +1,10 @@
 <?php
 namespace Knock\Action\Post;
 
-use Flexper\Env;
-use Flexper\Action;
+use Alcedoo\Env;
+use Alcedoo\Action;
 use Michelf\Markdown;
-use Flexper\Mysql\Query;
+use Alcedoo\Mysql\Query;
 
 class View extends Action{
 	function execute(){
@@ -12,7 +12,7 @@ class View extends Action{
 		$response = $this->response;
 		
 		$uid = $request->uid;
-		$mysql = Env::getInstance('\Flexper\Mysql');
+		$mysql = Env::getInstance('\Alcedoo\Mysql');
 		$query = new Query();
 		$query->table('Posts')->select()->where(array('uid'=>$request->uid));
 		$article = $mysql->exec($query);

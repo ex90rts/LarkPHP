@@ -1,9 +1,9 @@
 <?php
 namespace Knock\Action;
 
-use Flexper\Env;
-use Flexper\Action;
-use Flexper\Mysql\Query;
+use Alcedoo\Env;
+use Alcedoo\Action;
+use Alcedoo\Mysql\Query;
 use Michelf\Markdown;
 
 class Index extends Action{
@@ -11,7 +11,7 @@ class Index extends Action{
 		$response = $this->response;
 		$response->tab = 'HOME';
 		
-		$mysql = Env::getInstance('\Flexper\Mysql');
+		$mysql = Env::getInstance('\Alcedoo\Mysql');
 		$query = new Query();
 		$query->table('Posts')->select()->order(array('id'=>'DESC'))->limit(10);
 		$posts = $mysql->exec($query);

@@ -1,12 +1,12 @@
 <?php
 namespace Knock\Action\Post;
 
-use Flexper\Action;
-use Flexper\Env;
-use Flexper\Constants;
-use Flexper\Util;
-use Flexper\Mysql\Query;
-use Flexper\Uniqid;
+use Alcedoo\Action;
+use Alcedoo\Env;
+use Alcedoo\Constants;
+use Alcedoo\Util;
+use Alcedoo\Mysql\Query;
+use Alcedoo\Uniqid;
 
 class Newpost extends Action{
 	function execute(){
@@ -22,7 +22,7 @@ class Newpost extends Action{
 			$tags = $request->tags;
 			$content = $request->content;
 			
-			$mysql = Env::getInstance('\Flexper\Mysql');
+			$mysql = Env::getInstance('\Alcedoo\Mysql');
 			$mysql->transaction();
 			
 			$uniqid = new Uniqid();

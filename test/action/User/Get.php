@@ -1,13 +1,13 @@
 <?php
 namespace Knock\Action\User;
 
-use Flexper\Util;
+use Alcedoo\Util;
 
-use Flexper\Mysql\Query;
+use Alcedoo\Mysql\Query;
 
-use Flexper\Uniqid;
-use Flexper\Env;
-use Flexper\Action;
+use Alcedoo\Uniqid;
+use Alcedoo\Env;
+use Alcedoo\Action;
 
 class Get extends Action{
 	var $Samoay;
