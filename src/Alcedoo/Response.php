@@ -179,6 +179,6 @@ class Response{
             throw new PathNotFoundException(sprintf('path %s not found', $templateFile));
         }
         
-        require_once $templateFile;
+        require $templateFile;
     }
 }

@@ -168,7 +168,7 @@ abstract class Action{
         	    if (!is_array($hasPermissions)){
         	        return false;
         	    }
-        	    if (!in_array($code, $hasPermissions)){
+        	    if (!in_array($code, $hasPermissions, true)){
         	        return false;
         	    }
         	}

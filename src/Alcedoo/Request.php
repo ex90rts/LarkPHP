@@ -14,7 +14,7 @@ class Request{
     private $_files;
     
     /**
-     * Construct function, parse $_GET, $_POST  and $_FILES data by default
+     * Construct function, assign $_GET, $_POST  and $_FILES data by default
      */
     private function __construct(){
         $this->_get = $_GET;
@@ -36,7 +36,7 @@ class Request{
     
     /**
      * Block the clone method
-     * @throws \Exception
+     * @throws CloneNotAllowedException
      */
     public function __clone(){
         throw new CloneNotAllowedException(sprintf('class name %s', __CLASS__));
@@ -50,7 +50,7 @@ class Request{
      */
     public function __get($name){
         if (in_array($name, array('_instance', '_get', '_post', '_cookie', '_session', '_server'))){
-            throw new \Exception('not allowd to get resolved attributes');
+            throw new \Exception('not allowd to get reserved attributes');
         }
         if (isset($this->_get[$name])){
             return $this->_get[$name];

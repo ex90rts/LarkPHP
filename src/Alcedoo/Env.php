@@ -2,7 +2,6 @@
 namespace Alcedoo;
 
 use Alcedoo\Exception\NoAutoloaderDefinedException;
-
 use Alcedoo\Exception\PathNotFoundException;
 
 /**
@@ -49,25 +48,26 @@ class Env{
 	public static function init(array $options=array()){
 		//some default options to keep this framework without any outer options
 		$default = array(
-			'project'        => 'test',
-			'projectName'    => 'Test Project',
-			'projectPath'    => dirname(__FILE__).'/../../',
-			'namespace'      => 'Alcedootest',
-			'platform'       => 'foo',
-			'libPath'        => dirname(__FILE__).'/../',
-			'logDir'         => sys_get_temp_dir() . DIRECTORY_SEPARATOR . strtolower(self::$codename),
-			'logTypes'       => array('action', 'error', 'debug', 'exception'),
-			'configDir'      => 'config',
-			'timezone'       => 'Asia/Shanghai',
-			'charset'        => 'UTF-8',
-			'dataEngine'     => '\Alcedoo\Mongo',
-			'router'         => array('\Alcedoo\Router', 'route'),
-			'autoloader'     => array('\Alcedoo\Env', 'defaultAutoloader'),
-			'errorHandler'   => array('\Alcedoo\Env', 'defaultErrorHandler'),
-			'error_reporting'=> E_ALL & ~E_NOTICE,
+			'project'          => 'test',
+			'projectName'      => 'Test Project',
+			'projectPath'      => dirname(__FILE__).'/../../',
+			'namespace'        => 'Alcedootest',
+			'platform'         => 'foo',
+			'libPath'          => dirname(__FILE__).'/../',
+			'logDir'           => sys_get_temp_dir() . DIRECTORY_SEPARATOR . strtolower(self::$codename),
+			'logTypes'         => array('action', 'error', 'debug', 'exception'),
+			'configDir'        => 'config',
+			'timezone'         => 'Asia/Shanghai',
+			'charset'          => 'UTF-8',
+			'dataEngine'       => '\Alcedoo\Mongo',
+			'router'           => array('\Alcedoo\Router', 'routeController'),
+			'autoloader'       => array('\Alcedoo\Env', 'defaultAutoloader'),
+			'errorHandler'     => array('\Alcedoo\Env', 'defaultErrorHandler'),
+			'error_reporting'  => E_ALL & ~E_NOTICE,
+			'shutdownFunction' => array('\Alcedoo\Env', 'defaultShutdownFunction'),
 		);
 
-		$requestOptions = @$_REQUEST['alcedoo'];
+		$requestOptions = isset($_REQUEST['alcedoo']) ? $_REQUEST['alcedoo'] : array();
 		foreach($options as $key=>$value){
 		    $default[$key] = $value;
 		    if (isset($requestOptions[$key])){
@@ -83,6 +83,7 @@ class Env{
 		self::$_options = $default;
 
 		set_error_handler(self::$_options['errorHandler'], $default['error_reporting']);
+		register_shutdown_function(self::$_options['shutdownFunction']);
 		spl_autoload_register(self::$_options['autoloader']);
 
 		if (!empty(self::$_options['timezone'])){
@@ -140,7 +141,7 @@ class Env{
 	    if (file_exists($filePath)){
 	        require $filePath;
 	    }else{
-	        throw new PathNotFoundException(sprintf('path %s not found', $filePath));
+	        throw new \Exception(sprintf('path %s not found', $filePath));
 	    }
 	}
 
@@ -153,6 +154,15 @@ class Env{
 	    echo "</pre>";
 	}
 
+	/**
+	 * Default shutdown function for framework
+	 */
+	public static function defaultShutdownFunction(){
+		echo "<pre>";
+		print_r(error_get_last());
+		echo "</pre>";
+	}
+	
 	/**
 	 * Return the instance of a common object from the instance pool
 	 * @param string $className

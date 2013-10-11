@@ -1,10 +1,7 @@
 <?php
 namespace Alcedoo;
 
-use Alcedoo\Action;
 use Alcedoo\Env;
-use Alcedoo\Request;
-use Alcedoo\Response;
 use Alcedoo\Exception\PathNotFoundException;
 
 class Router{
@@ -12,7 +9,7 @@ class Router{
      * Defaunlt ruouter of the framework
      * @throws PathNotFoundException
      */
-    public static function route(){
+    public static function routeAction(){
         $request = Env::getInstance('Alcedoo\Request');
         $response = Env::getInstance('Alcedoo\Response');
 
@@ -37,6 +34,41 @@ class Router{
 	        }
 	        $action->finish();
         }catch(AlcedooException $e){
+            echo '<pre>';
+            echo 'Alcedoo Defined Exception:'."\r\n";
+            print_r($e);
+            echo '</pre>';
+        }catch(\Exception $e) {
+            echo '<pre>';
+            echo 'Upper Level Exception:'."\r\n";
+            print_r($e);
+            echo '</pre>';
+        }
+    }
+    
+    public static function routeController(){
+    	$request = Env::getInstance('Alcedoo\Request');
+    	$response = Env::getInstance('Alcedoo\Response');
+    	
+    	//controller//action//id
+    	try{
+    		$uri = $request->getServer('REQUEST_URI');
+    		$parts = explode('?', $uri);
+    		$path = trim($parts[0], '/');
+    		$pathParts = explode('/', $path);
+    		$controller = isset($pathParts[0]) ? $pathParts[0] : 'Default';
+    		$action = isset($pathParts[1]) ? $pathParts[1] : 'Index';
+    		$partsUcfirst = array(
+    				Env::getOption('namespace'),
+    				'Controller',
+    				ucfirst($controller),
+    		);
+    		$controllerClass = implode('\\', $partsUcfirst);
+    		$controller = new $controllerClass($request, $response);
+    		$controller->beforeAction();
+    		$controller->$action();
+    		$controller->afterAction();
+    	}catch(AlcedooException $e){
             echo '<pre>';
             echo 'Alcedoo Defined Exception:'."\r\n";
             print_r($e);

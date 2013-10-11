@@ -8,16 +8,41 @@ use Alcedoo\Exception\WrongParamException;
 use Alcedoo\Exception\WrongLogTypeException;
 
 class Logger{
+	/**
+	 * Var for holding singleton instance of this class
+	 * @var object
+	 */
     private static $_instance;
     
+    /**
+     * Var for holding base dir of log files
+     * @var string
+     */
     private $_logDir;
     
+    /**
+     * Var for holding temp log content before write to file
+     * @var Array
+     */
     private $_logContent;
     
+    /**
+     * Var for holding available log types
+     * @var Array
+     */
     private $_logTypes;
     
+    /**
+     * Var for caching current yyyy-mm-dd date str in script
+     * @var string
+     */
     private $_logDate;
     
+    /**
+     * Construct function
+     * 
+     * @throws PathNotFoundException
+     */
     private function __construct(){
         $logDir = Env::getOption('logDir');
         if (!is_dir($logDir) && !mkdir($logDir)){
@@ -36,6 +61,10 @@ class Logger{
         $this->_logDate = date('Y-m-d', Util::getNow());
     }
     
+    /**
+     * Method to return the singleton instance of Logger
+     * @return Object
+     */
     public static function getInstance(){
         if (!self::$_instance){
             $class = __CLASS__;
@@ -44,10 +73,21 @@ class Logger{
         return self::$_instance;
     }
     
+    /**
+     * Block the clone method
+     * 
+     * @throws CloneNotAllowedException
+     */
     public function __clone(){
         throw new CloneNotAllowedException(sprintf('class name %s', __CLASS__));
     }
     
+    /**
+     * Append partial log content to an exist log type
+     * 
+     * @param string $type
+     * @param string $content
+     */
     public function append($type, $content){
         if (!is_array($content)){
             $content = array('info'=>$content);
@@ -62,6 +102,14 @@ class Logger{
         $this->_logContent[$type] = $current;
     }
     
+    /**
+     * Write the log to log files
+     * 
+     * @param string $type
+     * @param string $content
+     * @throws PathNotFoundException
+     * @return boolean
+     */
     public function log($type, $content){
         $this->append($type, $content);
         
