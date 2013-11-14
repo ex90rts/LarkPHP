@@ -26,7 +26,7 @@ class Newpost extends Action{
 			$mysql->transaction();
 			
 			$uniqid = new Uniqid();
-			$postUid = $uniqid->create(Constants::UNIQID_TYPE_POST);
+			$postUid = $uniqid->create(UNIQID_TYPE_POST);
 			
 			$tags = str_replace(array('，', ';', '；', ' '), ',', $tags);
 			$tagsArray = explode(',', $tags);
@@ -50,7 +50,7 @@ class Newpost extends Action{
 			$mysql->commit();
 			
 			foreach ($tagsArray as $tag){
-				$tagUid = $uniqid->create(Constants::UNIQID_TYPE_TAG);
+				$tagUid = $uniqid->create(UNIQID_TYPE_TAG);
 				$record = array(
 					'uid' => $tagUid,
 					'tag' => $tag,

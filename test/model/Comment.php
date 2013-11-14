@@ -3,29 +3,37 @@ namespace Knock\Model;
 
 use Alcedoo\Model;
 
+/**
+ * The following properties are the avaliable fields in this model, use @property comment for code hinting
+ * 
+ * @property string $username
+ * @author jinhong
+ *
+ */
 class Comment extends Model{
-	public $id;
-	public $uid;
-	public $username;
-	public $email;
-	public $title;
-	public $content;
-	public $created;
 	
-	protected function getEngineType(){
-		return parent::ENGINE_MYSQL;
-	}
-	
-	protected function getTableName(){
+	protected function getTable(){
 		return "Comments";
 	}
 	
-	protected function getValidRules(){
+	protected function getFields(){
 		return array(
-			'id' => array('required', 'int'),
-			'uid' => array('required'),
-			'username' => array('required'),
-			'content' => array('required'),
+			'id' => array(
+				'name' => 'ID',
+				'type' => TYPE_INT,
+			),
+			'userid' => array(
+				'name' => '用户ID', 
+				'type' => TYPE_INT,
+			),
+			'username' => array(
+				'name' => '用户名', 
+			),
+			'content' => array(
+				'name' => '评论内容',
+			),
 		);
 	}
+	
+	
 }

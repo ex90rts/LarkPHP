@@ -62,7 +62,7 @@ class Uniqid{
         self::init();
         self::checkType($type);
         $typeCode = self::$_typeCode[$type];
-        $timeCode = strval(Util::getNow()-Constants::START_TIMESTAMP);
+        $timeCode = strval(Util::getNow()-START_TIMESTAMP);
         $timeCode = substr(str_pad($timeCode, self::$_timeDeci, '0', STR_PAD_LEFT), -self::$_timeDeci);
         $randCode = mt_rand(pow(10,self::$_randDeci-1), pow(10, self::$_randDeci)-1);
         $id = $typeCode . $timeCode . $randCode;
@@ -85,7 +85,7 @@ class Uniqid{
     public static function getTimestamp($id){
         self::init();
         $timeCode = self::getTimeCode($id);
-        return intval($timeCode)+Constants::START_TIMESTAMP;
+        return intval($timeCode)+START_TIMESTAMP;
     }
     
     public static function hasId($id){

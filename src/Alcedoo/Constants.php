@@ -1,18 +1,19 @@
 <?php
 namespace Alcedoo;
 
-class Constants{
+/*Base Envirament Constants*/
+define("START_DATETIME", '2013-01-01 00:00:00');
+define("START_TIMESTAMP", 1356969600);
 
-	/*Base Envirament Constants*/
-    const START_DATETIME = '2013-01-01 00:00:00';
-    const START_TIMESTAMP = 1356969600;
+/*Redirect Constants*/
+define("REDIRECT_PERMISSION", 'redirect_permission');
+define("REDIRECT_NEXTACTION", 'redirect_nextaction');
 
-    /*Redirect Constants*/
-    const REDIRECT_PERMISSION = 'redirect_permission';
-    const REDIRECT_NEXTACTION = 'redirect_nextaction';
-    
-    /*Uniqid Types*/
-    const UNIQID_TYPE_USER = 'user';
-    const UNIQID_TYPE_POST = 'post';
-    const UNIQID_TYPE_TAG = 'tag';
-}
+/*Data Types*/
+define("TYPE_INT", 'int');
+define("TYPE_NUMBER", 'number');
+define("TYPE_STRING", 'string');
+define("TYPE_BOOL", 'bool');
+define("TYPE_DATETIME", 'datetime');
+define("TYPE_SERIALIZED", 'serialized');
+define("TYPE_JSON", 'json');

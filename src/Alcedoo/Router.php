@@ -30,7 +30,7 @@ class Router{
 	        if ($res){
 	        	$action->execute();
 	        }else{
-	            $action->redirect(Constants::REDIRECT_PERMISSION);
+	            $action->redirect(REDIRECT_PERMISSION);
 	        }
 	        $action->finish();
         }catch(AlcedooException $e){

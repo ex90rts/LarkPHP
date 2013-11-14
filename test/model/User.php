@@ -3,20 +3,25 @@ namespace Knock\Model;
 
 use Alcedoo\Model;
 
+
 class User extends Model{
-	public function getEngineType(){
-		return 'mysql';
+	
+	protected function getTable(){
+		return "Users";
 	}
 	
-    public function getTableName(){
-    	return 'Users';
-    }
-    
-    public function getValidRules(){
-    	
-    }
-
-    public function query(array $query, $limit=0, $skip=0){
-        return $this->engine->find($this->getTableName(), $query, array(), array(), $limit, $skip);
-    }
+	protected function getFields(){
+		return array(
+			'id' => array(
+				'name' => 'ID',
+				'type' => TYPE_INT,
+			),
+			'username' => array(
+				'name' => '用户名',
+			),
+			'password' => array(
+				'name' => '评论内容',
+			),
+		);
+	}
 }
