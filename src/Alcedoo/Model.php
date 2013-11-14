@@ -1,29 +1,26 @@
 <?php
 namespace Alcedoo;
 
-use Alcedoo\Model\DataHandler;
 use Alcedoo\Model\DataList;
+use Alcedoo\Mysql\Query;
 
 abstract class Model{
 
-	const ENGINE_MYSQL = 'mysql';
-
-	const ENGINE_MONGO = 'mongo';
+	private $table;
 	
-	private $engine;
+	private $mysql;
 	
 	private $errors = array();
 
 	public function __construct($key=''){
-		$this->engine = DataHandler::factory($this->getEngineType());
+		$this->table = $this->getTableName();
+		$this->mysql = Env::getInstance('Alcedoo\Mysql');
 		if (is_int($key)){
 			$this->findDataByID($key);
 		}else if ($key != ''){
 			$this->findDataByUID($key);
 		}
 	}
-	
-	abstract protected function getEngineType();
 	
 	abstract protected function getTableName();
 	
@@ -39,18 +36,24 @@ abstract class Model{
     	return $result;
     }
 
-    private function findDataByID($id){
-    	$data = $this->engine->model($this)->findDataByID($id);
-    	if ($data){
-    		$this->loadData($data);
-    	}
+    public function findDataByID($table, $id){
+    	$query = new Query();
+    	$query->table($table)
+    	->where(array(
+    			'id' => $id,
+    	))
+    	->limit(1);
+    	return $this->mysql->exec($query);
     }
     
-    private function findDataByUID($uid){
-    	$data = $this->engine->model($this)->findDataByUID($uid);
-    	if ($data){
-    		$this->loadData($data);
-    	}
+    public function findDataByUID($table, $uid){
+    	$query = new Query();
+    	$query->table($table)
+    	->where(array(
+    			'uid' => $uid,
+    	))
+    	->limit(1);
+    	return $this->mysql->exec($query);
     }
 
     public function findDataByFilter($filter, $sort=array(), $limit){
@@ -126,18 +129,29 @@ abstract class Model{
     	
     	return $valid;
     }
-    
-    public function insert(){
-    	$this->engine->model($this)->insert();
-    }
-
-    public function update(){
-    	$this->engine->model($this)->update();
-    }
-
-    public function delete(){
-    	$this->engine->model($this)->delete();
-    }
+	
+	public function insert($table, $record){
+		$query = new Query(array('insertId'=>true));
+		$query->table($table)->insert($record);
+		$res = $this->mysql->exec($query);
+		if (is_int($res)){
+			return $res;
+		}
+		
+		return false;
+	}
+	
+	public function update($table, $where, $record){
+		$query = new Query(array('affectedRows'=>true));
+		$query->table($table)->where($where)->update($record);
+		return $this->mysql->exec($query);
+	}
+	
+	public function delete($table, $where){
+		$query = new Query();
+		$query->table($table)->where($where)->delete();
+		return $this->mysql->exec($query);
+	}
     
     public function errors(){
     	return $this->errors;
