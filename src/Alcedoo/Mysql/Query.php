@@ -212,6 +212,10 @@ class Query{
         if (!empty($arguments)){
             $orParts = array();
         	foreach ($arguments as $arg){
+        		if (empty($arg)){
+        			continue;
+        		}
+        		
         	    $andParts = array();
         	    foreach ($arg as $key=>$value){
         	        $op = '=';
@@ -227,7 +231,9 @@ class Query{
         	    }
         	    $orParts[] = implode(' AND ', $andParts);
         	}
-            $where = '('. implode(') OR (', $orParts) .')';
+        	if (!empty($orParts)){
+            	$where = '('. implode(') OR (', $orParts) .')';
+        	}
         }
         if (!empty($former) && $former!='1' && $where!='1'){
             $where = "({$former}) AND {$where}";

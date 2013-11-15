@@ -4,6 +4,8 @@ namespace Alcedoo;
 use Alcedoo\Exception\NoAutoloaderDefinedException;
 use Alcedoo\Exception\PathNotFoundException;
 
+require_once 'Constants.php';
+
 /**
  * Global App Environment Manager
  * 

@@ -5,14 +5,54 @@ use Alcedoo\Mysql\Query;
 use Alcedoo\Model\DataList;
 
 abstract class Model{
-
+	/**
+	 * Holding the mysql instance
+	 * 
+	 * @var Alcedoo\Mysql
+	 */
 	private $_mysql;
 	
+	/**
+	 * table name of this model
+	 * 
+	 * @var string
+	 */
 	private $_table;
 	
+	/**
+	 * user defined fields and validation rules of this model
+	 * 
+	 * @var array
+	 */
 	private $_fields;
 	
+	/**
+	 * user defined field data of this model
+	 * 
+	 * @var array
+	 */
+	private $_data = array();
+	
+	/**
+	 * stat of the data of the model instance was loaded or not
+	 * 
+	 * @var boolean
+	 */
+	private $_loaded = false;
+	
+	/**
+	 * validation errors holder after validate method invoked
+	 * 
+	 * @var array
+	 */
 	private $_errors = array();
+	
+	/**
+	 * primary key holder
+	 * 
+	 * @var int
+	 */
+	public $id = 0;
 
 	/**
 	 * Construct method, will try to load data if $pk param was given
@@ -31,10 +71,46 @@ abstract class Model{
 	}
 	
 	/**
+	 * Set field data to this model, only setted fields allowed
+	 * 
+	 * @param string $name
+	 * @param mixed $value
+	 */
+	public function __set($name, $value){
+		if (isset($this->_fields[$name])){
+			$this->_data[$name] = $value;
+		}
+	}
+	
+	/**
+	 * Read field data from this model
+	 * 
+	 * @param string $name
+	 */
+	public function __get($name){
+		if (isset($this->_data[$name])){
+			return $this->_data[$name];
+		}
+		
+		return null;
+	}
+	
+	/**
+	 * Use print_r to ouput current model data
+	 * 
+	 * @return mixed
+	 */
+	public function __toString(){
+		return "Model:" . get_called_class() ."({$this->id})\r\n". print_r($this->_data, true);
+	}
+	
+	/**
 	 * Return this model's table name, the default value is current model class name
 	 */
-	abstract protected function getTable(){
-		return get_called_class();
+	protected function getTable(){
+		$calledClass = get_called_class();
+		$nameParts = explode('\\', $calledClass);
+		return end($nameParts) . 's';
 	}
 	
 	/**
@@ -52,9 +128,14 @@ abstract class Model{
 	public function loadData(Array $data){
 		foreach ($this->_fields as $field=>$info){
 			if (isset($data[$field])){
-				$this->$field = $data[$field];
+				$this->_data[$field] = $data[$field];
 			}
 		}
+		if (isset($data[PRIMARY_KEY])){
+			$this->id = $data[PRIMARY_KEY];
+		}
+		
+		$this->_loaded = true;
 	}
 
 	/**
@@ -66,6 +147,7 @@ abstract class Model{
     public function findDataByID($id){
     	$query = new Query();
     	$query->table($this->_table)
+    	->select()
     	->where(array(
     			'id' => $id,
     	))
@@ -88,6 +170,7 @@ abstract class Model{
     public function findDataByUID($uid){
     	$query = new Query();
     	$query->table($this->_table)
+    	->select()
     	->where(array(
     			'uid' => $uid,
     	))
@@ -105,17 +188,18 @@ abstract class Model{
      * 
      * @param array $filter
      * @param array $sort
-     * @param int $limit
+     * @param int $limit default limit is 1000
      * @return \Alcedoo\Model\DataList|boolean
      */
-    public function findDataByFilter($filter, $sort=array(), $limit){
+    public function findDataByFilter($filter=array(), $sort=array(), $limit=1000){
     	$query = new Query();
     	$query->table($this->_table)
+    	->select()
     	->where($filter)
-    	->limit(1);
+    	->limit($limit);echo $query;
     	$list = $this->_mysql->exec($query);
     	if ($list){
-    		return new DataList($this, $list);
+    		return new DataList(get_called_class(), $list);
     	}
     	
     	return false;
@@ -137,7 +221,15 @@ abstract class Model{
     	$valid = true;
     	
     	foreach ($this->_fields as $field=>$info){
-    		$value = $this->$field;
+    		//special check of primary key
+    		if ($field == 'id'){
+    			if (isset($this->id) && !is_int($this->id)){
+    				$this->_errors[] = "Model primary key {$field} must be an integer";
+    			}
+    			continue;
+    		}
+    		
+    		$value = $this->_data[$field];
     		
     		//assign the defualt field config
     		$type = isset($info['type']) ? $info['type'] : TYPE_STRING;
@@ -154,7 +246,7 @@ abstract class Model{
     			
     		//assign the default value
     		if (empty($value) && !empty($info['default'])){
-    			$this->$field = $info['default'];
+    			$this->_data[$field] = $info['default'];
     		}
     			
     		//data type check
@@ -236,6 +328,22 @@ abstract class Model{
     }
 	
     /**
+     * Save current model data to database
+     * 
+     * @return boolean
+     */
+    public function save(){
+    	$data = $this->_data;
+    	if ($this->id > 0){
+    		$res = $this->update(array('id'=>$this->id), $data);
+    	}else{
+    		$res = $this->insert($data);
+    	}
+    	
+    	return $res;
+    }
+    
+    /**
      * Insert data to database
      * 
      * @param array $record
@@ -247,6 +355,7 @@ abstract class Model{
 			->insert($record);
 		$res = $this->_mysql->exec($query);
 		if (is_int($res)){
+			$this->id = $res;
 			return $res;
 		}
 		
@@ -274,11 +383,16 @@ abstract class Model{
 	 * @param array $where
 	 * @return boolean
 	 */
-	public function delete($where){
+	public function delete($where=array()){
+		if (empty($where)){
+			$where = array('id'=>$this->id);
+		}
 		$query = new Query();
 		$query->table($this->_table)
 			->where($where)
 			->delete();
+		$this->id = 0;
+		$this->_data = array();
 		return $this->_mysql->exec($query);
 	}
     

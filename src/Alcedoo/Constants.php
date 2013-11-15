@@ -17,3 +17,6 @@ define("TYPE_BOOL", 'bool');
 define("TYPE_DATETIME", 'datetime');
 define("TYPE_SERIALIZED", 'serialized');
 define("TYPE_JSON", 'json');
+
+/*MySQL Primary Key Name*/
+define("PRIMARY_KEY", 'id');

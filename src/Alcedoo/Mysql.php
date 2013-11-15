@@ -140,9 +140,9 @@ class Mysql{
             }
             $serverNum = count($server);
 
-            $dbnum = $tbconf['dbnum'];
-            if (!isset($tbconf['dbnum']) || !is_numeric($tbconf['dbnum'])){
-                $dbnum = 1;
+            $dbnum = 1;
+            if (isset($tbconf['dbnum']) && is_numeric($tbconf['dbnum'])){
+                $dbnum = $tbconf['dbnum'];
             }
 
             if ($serverNum>$dbnum){

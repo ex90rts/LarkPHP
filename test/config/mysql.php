@@ -6,7 +6,7 @@ $config = array(
 			'host' => '127.0.0.1',
 			'port' => '3306',
 			'user' => 'root',
-			'pass' => '827465',
+			'pass' => '123456',
 		),
 	),
 	'tables' => array(

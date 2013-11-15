@@ -56,8 +56,8 @@ class Router{
     		$parts = explode('?', $uri);
     		$path = trim($parts[0], '/');
     		$pathParts = explode('/', $path);
-    		$controller = isset($pathParts[0]) ? $pathParts[0] : 'Default';
-    		$action = isset($pathParts[1]) ? $pathParts[1] : 'Index';
+    		$controller = !empty($pathParts[0]) ? $pathParts[0] : 'Index';
+    		$action = isset($pathParts[1]) ? $pathParts[1] : 'View';
     		$partsUcfirst = array(
     				Env::getOption('namespace'),
     				'Controller',

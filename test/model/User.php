@@ -3,13 +3,17 @@ namespace Knock\Model;
 
 use Alcedoo\Model;
 
-
-class User extends Model{
-	
-	protected function getTable(){
-		return "Users";
-	}
-	
+/**
+ * User model
+ * 
+ * @author jinhong
+ *
+ * @property string $username
+ * @property string $password
+ * @property datetime $created
+ * 
+ */
+class User extends Model{	
 	protected function getFields(){
 		return array(
 			'id' => array(
@@ -22,6 +26,10 @@ class User extends Model{
 			'password' => array(
 				'name' => '评论内容',
 			),
+			'created' => array(
+				'name' => '创建时间',
+				'type' => TYPE_DATETIME,
+			)
 		);
 	}
 }

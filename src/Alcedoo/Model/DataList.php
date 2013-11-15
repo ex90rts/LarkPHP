@@ -9,9 +9,11 @@ class DataList implements \Iterator{
 	
 	private $position = 0;
 	
-	public function __construct(Model $model, array $list){
+	public function __construct($modelName, array $list){
 		foreach ($list as $row){
-			$this->array[] = $model->loadData($row);
+			$model = new $modelName();
+			$model->loadData($row);
+			$this->array[] = $model;
 		}
 	}
 	
@@ -37,9 +39,10 @@ class DataList implements \Iterator{
 		// TODO Auto-generated method stub
 		$next = null;
 		
-		$pos = $this->position + 1;
-		if (isset($this->array[$pos])){
-			$next = $this->array[$pos];
+		$this->position++;
+		
+		if (isset($this->array[$this->position])){
+			$next = $this->array[$this->position];
 		}
 		
 		return $next;
