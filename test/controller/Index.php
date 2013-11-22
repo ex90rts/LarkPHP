@@ -9,7 +9,10 @@ use Alcedoo\Env;
 class Index extends Controller{
 	public $conn;
 	
-	public function view(){
+	public function actionView(){
+		
+		$this->response->printr($_SERVER);
+		die;
 		$user = new User();
 		$list = $user->findDataByFilter();
 		
@@ -33,7 +36,7 @@ class Index extends Controller{
 		echo "this is the index:view action";
 	}
 	
-	public function test(){
+	public function actionTest(){
 		$query = new Query();
 		$query->table('Users')->select();
 		$mysql = Env::getInstance('Alcedoo\Mysql');
@@ -42,7 +45,7 @@ class Index extends Controller{
 		echo "this is the test view";
 	}
 	
-	public function pure(){
+	public function actionPure(){
 		if (!$this->conn){
 			$this->conn = mysqli_connect('127.0.0.1', 'root', '123456', 'blog', '3306');
 		}
@@ -52,7 +55,7 @@ class Index extends Controller{
 		}
 	}
 	
-	public function nothing(){
+	public function ActionNothing(){
 		echo 'nothing';
 	}
 }

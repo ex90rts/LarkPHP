@@ -2,6 +2,8 @@
 namespace Alcedoo;
 
 use Alcedoo\Env;
+use Alcedoo\Request;
+use Alcedoo\Response;
 use Alcedoo\Exception\PathNotFoundException;
 
 class Router{
@@ -10,8 +12,8 @@ class Router{
      * @throws PathNotFoundException
      */
     public static function routeAction(){
-        $request = Env::getInstance('Alcedoo\Request');
-        $response = Env::getInstance('Alcedoo\Response');
+        $request = new Request();
+        $response = new Response();
 
         try{
             $parts = explode('/', $request->action);
@@ -47,24 +49,20 @@ class Router{
     }
     
     public static function routeController(){
-    	$request = Env::getInstance('Alcedoo\Request');
-    	$response = Env::getInstance('Alcedoo\Response');
+    	$request = new Request();
+        $response = new Response();
     	
     	//controller//action//id
     	try{
-    		$uri = $request->getServer('REQUEST_URI');
-    		$parts = explode('?', $uri);
-    		$path = trim($parts[0], '/');
-    		$pathParts = explode('/', $path);
-    		$controller = !empty($pathParts[0]) ? $pathParts[0] : 'Index';
-    		$action = isset($pathParts[1]) ? $pathParts[1] : 'View';
     		$partsUcfirst = array(
-    				Env::getOption('namespace'),
-    				'Controller',
-    				ucfirst($controller),
+    			Env::getOption('namespace'),
+    			'Controller',
+    			ucfirst($request->controller),
     		);
-    		$controllerClass = implode('\\', $partsUcfirst);
-    		$controller = new $controllerClass($request, $response);
+    		$class = implode('\\', $partsUcfirst);
+    		$action = "action".ucfirst($request->action);
+    		
+    		$controller = new $class($request, $response);
     		$controller->beforeAction();
     		$controller->$action();
     		$controller->afterAction();

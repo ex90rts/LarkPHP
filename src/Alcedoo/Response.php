@@ -1,16 +1,9 @@
 <?php
 namespace Alcedoo;
 
-use Alcedoo\Exception\CloneNotAllowedException;
 use Alcedoo\Exception\PathNotFoundException;
 
 class Response{
-    /**
-     * Var for holding singleton instance of Alcedoo\Response
-     * @var Alcedoo\Response
-     */
-    private static $_instance = null;
-    
     /**
      * Current response charset, default value from Alcedoo\Env::options
      * @var string
@@ -25,28 +18,8 @@ class Response{
     /**
      * Construct function
      */
-    private function __construct(){
+    public function __construct(){
         $this->_charset = Env::getOption('charset');
-    }
-    
-    /**
-     * Method to return the singleton instance
-     * @return Object
-     */
-    public static function getInstance(){
-        if (!self::$_instance){
-            $class = __CLASS__;
-            self::$_instance = new $class();
-        }
-        return self::$_instance;
-    }
-    
-    /**
-     * Block the clone method
-     * @throws \Exception
-     */
-    public function __clone(){
-        throw new CloneNotAllowedException(sprintf('class name %s', __CLASS__));
     }
     
     /**

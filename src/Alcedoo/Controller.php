@@ -22,6 +22,12 @@ abstract class Controller{
 	protected $response;
 	
 	/**
+	 * If current request is ajax
+	 * @var unknown
+	 */
+	protected $isAjax = false;
+	
+	/**
 	 * Var for Alcedoo|Logger instance
 	 * @var Alcedoo\Logger
 	 */
@@ -59,17 +65,6 @@ abstract class Controller{
 		$this->response = $response;
 		$this->logger = null;
 		$this->models = array();
-	}
-	
-	/**
-	 * Check access permissions for current action
-	 */
-	public function checkPermissions(){
-		
-	}
-	
-	public function validate(){
-		
 	}
 	
 	public function beforeAction(){

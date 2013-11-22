@@ -1,45 +1,49 @@
 <?php
 namespace Alcedoo;
 
-use Alcedoo\Exception\CloneNotAllowedException;
-
 class Request{
-    
-    private static $_instance = null;
-    
+	
+	/**
+	 * HTTP method defination
+	 * 
+	 */
+	const METHOD_GET    = 'GET';
+	const METHOD_POST   = 'POST';
+    const METHOD_PUT    = 'PUT';
+    const METHOD_DELETE = 'DELETE';
+	
     private $_get;
     
     private $_post;
     
     private $_files;
     
+    public $method;
+    
+    public $controller;
+    
+    public $action;
+    
+    public $ajax = false;
+    
     /**
      * Construct function, assign $_GET, $_POST  and $_FILES data by default
-     */
-    private function __construct(){
+     */ 
+    public function __construct(){
         $this->_get = $_GET;
         $this->_post = $_POST;
         $this->_files = $_FILES;
-    }
-    
-    /**
-     * Method to return the singleton instance
-     * @return Object
-     */
-    public static function getInstance(){
-        if (!self::$_instance){
-            $class = __CLASS__;
-            self::$_instance = new $class();
+        
+        $mainPath = explode('?', $_SERVER['REQUEST_URI']);
+        $pathParts = explode('/', trim($mainPath[0], '/'));
+        
+        $this->method = $_SERVER['REQUEST_METHOD'];
+        $this->controller = !empty($pathParts[0]) ? $pathParts[0] : 'Index';
+        $this->action = isset($pathParts[1]) ? $pathParts[1] : 'View';
+        
+        if(!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest') {
+        	$this->ajax = true;
         }
-        return self::$_instance;
-    }
-    
-    /**
-     * Block the clone method
-     * @throws CloneNotAllowedException
-     */
-    public function __clone(){
-        throw new CloneNotAllowedException(sprintf('class name %s', __CLASS__));
     }
     
     /**
@@ -49,7 +53,7 @@ class Request{
      * @return mixed
      */
     public function __get($name){
-        if (in_array($name, array('_instance', '_get', '_post', '_cookie', '_session', '_server'))){
+        if (in_array($name, array('_get', '_post', '_cookie', '_session', '_server'))){
             throw new \Exception('not allowd to get reserved attributes');
         }
         if (isset($this->_get[$name])){
