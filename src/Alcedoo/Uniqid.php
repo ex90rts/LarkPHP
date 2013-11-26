@@ -24,7 +24,7 @@ class Uniqid{
     
     private static function init(){
         if (!self::$_isInited){
-	        $config = Env::getInstance('\Alcedoo\Config')->uniqid;
+	        $config = Env::getInstance('Config')->uniqid;
 	        if (!isset($config)){
 	            throw new MissingConfigException('missing uniqid config');
 	        }

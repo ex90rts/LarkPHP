@@ -61,10 +61,11 @@ class Router{
     		);
     		$class = implode('\\', $partsUcfirst);
     		$action = "action".ucfirst($request->action);
-    		
+		
     		$controller = new $class($request, $response);
-    		$controller->beforeAction();
-    		$controller->$action();
+    		if ($controller->beforeAction()){
+    			$controller->$action();
+    		}
     		$controller->afterAction();
     	}catch(AlcedooException $e){
             echo '<pre>';
@@ -73,7 +74,7 @@ class Router{
             echo '</pre>';
         }catch(\Exception $e) {
             echo '<pre>';
-            echo 'Upper Level Exception:'."\r\n";
+            echo 'System Level Exception:'."\r\n";
             print_r($e);
             echo '</pre>';
         }

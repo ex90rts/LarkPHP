@@ -24,6 +24,8 @@ class Request{
     
     public $action;
     
+    public $ip = null;
+    
     public $ajax = false;
     
     /**
@@ -113,6 +115,33 @@ class Request{
         }else{
             return $_COOKIE;
         }
+    }
+    
+    /**
+     * Get request HTTP header
+     * 
+     * @param string $name
+     */
+    public function getHeader($name){
+    	 $headerName = "HTTP_{$name}";
+    	 if (isset($_SERVER[$headerName])){
+    	 	return $_SERVER[$headerName];
+    	 }else{
+    	 	return false;
+    	 }
+    }
+    
+    /**
+     * Get request's client IP
+     * 
+     * @return string ipv4 address
+     */
+    public function getIP(){
+    	if (!$this->ip){
+    		$this->ip = $_SERVER['REMOTE_ADDR'];
+    	}
+    	 
+    	return $this->ip;
     }
     
     /**

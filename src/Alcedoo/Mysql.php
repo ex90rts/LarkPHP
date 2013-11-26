@@ -76,7 +76,7 @@ class Mysql{
         $this->_connPool = array();
         $this->_currConn = null;
 
-        $config = Env::getInstance('Alcedoo\Config');
+        $config = Env::getInstance('Config');
         if (!isset($config->mysql)){
             throw new MissingConfigException('missing mysql config');
         }

@@ -165,17 +165,18 @@ class Env{
 	}
 	
 	/**
-	 * Return the instance of a common object from the instance pool
+	 * Return the singleton instance of a common object from the instance pool
 	 * @param string $className
 	 * @return mixed
 	 */
 	public static function getInstance($className){
-	    if (empty(self::$_instancesPool[$className])){
-	        $instance = $className::getInstance();
-	        self::$_instancesPool[$className] = $instance;
+		$fullClassName = self::$codename . '\\' . $className;
+	    if (empty(self::$_instancesPool[$fullClassName])){
+	        $instance = $fullClassName::getInstance();
+	        self::$_instancesPool[$fullClassName] = $instance;
 	        return $instance;
 	    }else{
-	        return self::$_instancesPool[$className];
+	        return self::$_instancesPool[$fullClassName];
 	    }
 	}
 

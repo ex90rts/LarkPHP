@@ -30,7 +30,7 @@ class Cache{
         }
 
         $adapter = null;
-        $config = Env::getInstance('Alcedoo\Config');
+        $config = Env::getInstance('Config');
         if (isset($config->$configName)){
         	$adapter = new $adapterName($config->$configName);
         }else{

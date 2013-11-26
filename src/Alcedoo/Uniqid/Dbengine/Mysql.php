@@ -13,7 +13,7 @@ class Mysql implements DbengineInterface{
     private $_table;
     
 	public function __construct($table){
-	    $this->_mysql = Env::getInstance('\Alcedoo\Mysql');
+	    $this->_mysql = Env::getInstance('Mysql');
 	    $this->_table = $table;
 	}
     

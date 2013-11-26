@@ -3,6 +3,7 @@ namespace Alcedoo;
 
 use Alcedoo\Request as Request;
 use Alcedoo\Response as Response;
+use Alcedoo\Access;
 
 abstract class Controller{
 	
@@ -13,19 +14,19 @@ abstract class Controller{
 	 * Var for Alcedoo\Request instance
 	 * @var Alcedoo\Request
 	 */
-	protected $request;
+	protected $req;
 	
 	/**
 	 * Var for Alcedoo\Response instance
 	 * @var Alcedoo\Response
 	 */
-	protected $response;
+	protected $res;
 	
 	/**
 	 * If current request is ajax
-	 * @var unknown
+	 * @var boolean
 	 */
-	protected $isAjax = false;
+	protected $ajax = false;
 	
 	/**
 	 * Var for Alcedoo|Logger instance
@@ -40,19 +41,10 @@ abstract class Controller{
 	protected $models;
 	
 	/**
-	 * Rules need to validate
-	 * @var Array
+	 * Can user access this time
+	 * @var boolean
 	 */
-	protected $rules = array();
-	
-	/**
-	 * Rules need to check permission
-	 * @var Array
-	 */
-	//guest, login, groups
-	protected $permissions = array(
-		
-	);
+	protected $access = true;
 	
 	/**
 	 * Construct function
@@ -61,16 +53,61 @@ abstract class Controller{
 	 * @param Response $response
 	 */
 	public function __construct(Request $request, Response $response){
-		$this->request = $request;
-		$this->response = $response;
-		$this->logger = null;
+		$this->req    = $request;
+		$this->res    = $response;
+		$this->ajax   = $request->ajax;
+		$this->logger = Env::getInstance('Logger');
 		$this->models = array();
 	}
 	
-	public function beforeAction(){
-		
+	/**
+	 * Convinient method to get database model
+	 * @param String $modelName
+	 */
+	final function model($modelName){
+		$modelName = Env::getOption('namespace').'\Model\\'.$modelName;
+		if (!isset($this->models[$modelName])){
+			$this->models[$modelName] = new $modelName();
+		}
+	
+		return $this->models[$modelName];
 	}
 	
+	/**
+	 * Return current controller's access rules
+	 * @return multitype:
+	 */
+	protected function accessRules(){
+		return array();
+	}
+	
+	/**
+	 * Return current userentry instance
+	 */
+	protected function userEntry(){
+		return new UserEntry();
+	}
+	
+	/**
+	 * User access filter
+	 */
+	protected function filterAccess(){
+		$access = new Access($this->accessRules(), $this->userEntry(), $this->req);
+		$this->access = $access->filter();
+	}
+	
+	/**
+	 * Things need to do before invoke controller action,
+	 * such as get current user and check access
+	 */
+	public function beforeAction(){
+		$this->filterAccess();
+		return $this->access;
+	}
+	
+	/**
+	 * Things need to do after invoke controller action
+	 */
 	public function afterAction(){
 		
 	}

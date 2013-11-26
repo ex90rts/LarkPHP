@@ -9,9 +9,35 @@ use Alcedoo\Env;
 class Index extends Controller{
 	public $conn;
 	
+	protected function accessRules(){
+		return array(
+			array(AC_GRANT,
+				'actions' => array('View', 'Test'),
+				'groups' => array('Operator', 'Designer'),
+			),
+			array(AC_GRANT,
+				'verbs' => array('POST'),
+				'groups' => array('Manager'),
+			),
+			array(AC_GRANT,
+				'verbs' => array('POST'),
+				'groups' => array('Manager'),
+			),
+			array(AC_GRANT,
+				'roles' => array('ADMIN'),
+				'groups' => array('Manager'),
+			),
+			array(AC_DENY,
+				'roles' => array(ROLE_GUEST),
+			),
+		);
+	}
+	
 	public function actionView(){
+		$user = new User();
 		
-		$this->response->printr($_SERVER);
+		$this->res->addDebugInfo('name', $user);
+		$this->res->printr($_SERVER);
 		die;
 		$user = new User();
 		$list = $user->findDataByFilter();

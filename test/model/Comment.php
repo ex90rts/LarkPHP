@@ -32,6 +32,10 @@ class Comment extends Model{
 			'content' => array(
 				'name' => '评论内容',
 			),
+			'created' => array(
+				'name' => '创建时间',
+				'type' => TYPE_DATETIME,
+			),
 		);
 	}
 	

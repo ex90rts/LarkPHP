@@ -18,7 +18,7 @@ class Mongo{
  	private $_cursors;
 
     private function __construct(){
-        $config = Env::getInstance('Alcedoo\Config');
+        $config = Env::getInstance('Config');
         if (!isset($config->mongo)){
         	throw new MissingConfigException('missing mongo config');
         }

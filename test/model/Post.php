@@ -24,7 +24,7 @@ class Post extends Model{
 				'name' => '创建时间',
 				'type' => TYPE_DATETIME,
 			),
-			'update' => array(
+			'updated' => array(
 				'name' => '更新时间',
 				'type' => TYPE_DATETIME,
 			)

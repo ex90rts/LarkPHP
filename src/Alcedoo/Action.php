@@ -85,7 +85,7 @@ abstract class Action{
      */
     final function logger(){
         if (empty($this->logger)){
-        	$this->logger = Env::getInstance('Alcedoo\Logger');
+        	$this->logger = Env::getInstance('Logger');
     	}
     	return $this->logger;
     }

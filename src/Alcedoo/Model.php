@@ -60,7 +60,7 @@ abstract class Model{
 	 * @param string $pk
 	 */
 	public function __construct($pk=''){
-		$this->_mysql = Env::getInstance('Alcedoo\Mysql');
+		$this->_mysql = Env::getInstance('Mysql');
 		$this->_table = $this->getTable();
 		$this->_fields = $this->getFields();
 		if (is_int($pk)){

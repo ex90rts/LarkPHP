@@ -12,7 +12,7 @@ class Mongo implements DbengineInterface{
     private $_collection;
     
     public function __construct($collection){
-        $this->_mongo = Env::getInstance('\Alcedoo\Mongo');
+        $this->_mongo = Env::getInstance('Mongo');
         $this->_collection = $collection;
     }
     

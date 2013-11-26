@@ -16,6 +16,11 @@ class Response{
     private $_data;
     
     /**
+     * Debug info need to send with response
+     */
+    private $_debuginfo;
+    
+    /**
      * Construct function
      */
     public function __construct(){
@@ -23,11 +28,15 @@ class Response{
     }
     
     /**
-     * Set any undefined class var to $_data as an output data source
+     * Set any undefined property to $_data as an output data source
      * @param string $name
      * @param mixed $value
      */
     public function __set($name, $value){
+    	if (in_array($name, array('_charset', '_data', '_debuginfo'), true)){
+    		trigger_error("can not set response property with reserved key {$name}", E_USER_WARNING);
+    	}
+    	
         $this->_data[$name] = $value;
     }
     
@@ -47,12 +56,55 @@ class Response{
     }
     
     /**
+     * Push debug info into $_debuginfo
+     */
+    public function addDebugInfo($key, $value){
+    	$this->_debuginfo[$key] = $value;
+    }
+    
+    /**
+     * Send out debuginfo with response via HTTP header
+     */
+    private function sendDebugInfo(){
+    	if (!empty($this->_debuginfo)){
+    		foreach ($this->_debuginfo as $key=>$value){
+    			$plainValue = $value;
+    			if (is_array($value)){
+    				$plainValue = json_encode($value);
+    			}
+    			if (is_object($value)){
+    				$plainValue = 'Object('. get_class($value) .')';
+    			}
+    			if (!is_string($plainValue) && !is_numeric($value) && !is_bool($value)){
+    				$plainValue = '-Unknown Variable-';
+    			}
+    			$this->setHeader('X-' . Env::$codename . '-Debug:' . $key . '|' . $plainValue);
+    		}
+    	}
+    }
+    
+    /**
      * Replace the default charset of current response if needed
      * This function must be invoked before any output function
      * @param string $charset
      */
     public function setCharset($charset){
         $this->_charset = $charset;
+    }
+    
+    /**
+     * Set a raw HTTP header
+     * 
+     * @param string $string
+     * @param boolean $replace
+     * @param int $http_response_code
+     */
+    public function setHeader($string, $replace = true, $http_response_code = null){
+    	if (!headers_sent($filename, $linenum)){
+    		header($string, $replace, $http_response_code);
+    	}else{
+    		trigger_error("headers already sent in file $filename on line $linenum", E_USER_WARNING);
+    	}
     }
     
     /**
@@ -66,12 +118,45 @@ class Response{
     }
     
     /**
+     * Set or delete a cookie
+     * 
+     * @name string cookie name
+     * @value string cookie value
+     * @expire int cookie live time start from set in seconds, could be negative if you want to delete a cookie
+     * @path string cookie path
+     * @domain string cookie domain
+     * @secure boolean is cookie under https
+     * @httpOnly boolean is cookie http only
+     */
+    public function setCookie($name, $value = null, $expire = 0, $path = null, $domain = null, $secure = false, $httpOnly = false){
+    	$expire = time() + $expire;
+    	setcookie($name, $value, $expire, $path, $domain, $secure, $httpOnly);
+    }
+    
+    /**
+     * Set or delete a raw content cookie
+     *
+     * @name string cookie name
+     * @value string cookie value
+     * @expire int cookie live time start from set in seconds, could be negative if you want to delete a cookie
+     * @path string cookie path
+     * @domain string cookie domain
+     * @secure boolean is cookie under https
+     * @httpOnly boolean is cookie http only
+     */
+    public function setRawCookie($name, $value = null, $expire = 0, $path = null, $domain = null, $secure = false, $httpOnly = false){
+    	$expire = time() + $expire;
+    	setrawcookie($name, $value, $expire, $path, $domain, $secure, $httpOnly);
+    }
+    
+    /**
      * Output data as plain text
      * @param string $text
      */
     public function text($text){
-        header('Content-Type: text; charset=' . $this->_charset);
-        header('Cache-Control: no-cache');
+        $this->setHeader('Content-Type: text; charset=' . $this->_charset);
+        $this->setHeader('Cache-Control: no-cache');
+        $this->sendDebugInfo();
         echo $text;
     }
     
@@ -80,8 +165,9 @@ class Response{
      * @param array $data
      */
     public function json(array $data){
-        header('Content-Type: text/json; charset=' . $this->_charset);
-        header('Cache-Control: no-cache');
+        $this->setHeader('Content-Type: text/json; charset=' . $this->_charset);
+        $this->setHeader('Cache-Control: no-cache');
+        $this->sendDebugInfo();
         echo json_encode($data);
     }
     
@@ -90,8 +176,9 @@ class Response{
      * @param string $script
      */
     public function script($script){
-        header('Content-Type: text/html; charset=' . $this->_charset);
-        header('Cache-Control: no-cache');
+        $this->setHeader('Content-Type: text/html; charset=' . $this->_charset);
+        $this->setHeader('Cache-Control: no-cache');
+        $this->sendDebugInfo();
         echo '<script type="text/javascript">';
         echo $script;
         echo '</script>';
@@ -117,8 +204,9 @@ class Response{
      * @param array $data
      */
     public function printr($data){
-        header('Content-Type: text/html; charset=' . $this->_charset);
-        header('Cache-Control: no-cache');
+        $this->setHeader('Content-Type: text/html; charset=' . $this->_charset);
+        $this->setHeader('Cache-Control: no-cache');
+        $this->sendDebugInfo();
         echo '<pre>';
         if (is_array($data)){
         	print_r($data);
@@ -133,18 +221,21 @@ class Response{
      * @param mixed $data
      */
     public function vardump($data){
-        header('Content-Type: text/html; charset=' . $this->_charset);
-        header('Cache-Control: no-cache');
+        $this->setHeader('Content-Type: text/html; charset=' . $this->_charset);
+        $this->setHeader('Cache-Control: no-cache');
+        $this->sendDebugInfo();
         echo '<pre>';
         var_dump($data);
         echo '</pre>';
     }
     
     /**
-     * Output $_data via template file
+     * Render $_data via HTML template
      * @param string $template
      */
-    public function template($template){
+    public function render($template){
+    	$this->sendDebugInfo();
+    	
         $project = Env::getOption('project');
         $projectPath = Env::getOption('projectPath');
         $templateFile = $projectPath . DIRECTORY_SEPARATOR . $project . DIRECTORY_SEPARATOR . 'template' . DIRECTORY_SEPARATOR . $template;
@@ -152,6 +243,8 @@ class Response{
             throw new PathNotFoundException(sprintf('path %s not found', $templateFile));
         }
         
+        ob_start();
         require $templateFile;
+        ob_flush();
     }
 }
