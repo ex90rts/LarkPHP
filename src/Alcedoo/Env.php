@@ -48,19 +48,20 @@ class Env{
 	 */
 	public static function init(array $options=array()){
 		//some default options to keep this framework without any outer options
+		$upperCodename = strtoupper(self::$codename);
 		$default = array(
 			'project'          => 'test',
 			'projectName'      => 'Test Project',
 			'projectPath'      => dirname(__FILE__).'/../../',
 			'namespace'        => 'Alcedootest',
-			'platform'         => 'foo',
+			'platform'         => !empty($_SERVER["{$upperCodename}_PLATFORM"]) ? $_SERVER["{$upperCodename}_PLATFORM"] : 'foo',
 			'libPath'          => dirname(__FILE__).'/../',
-			'logDir'           => sys_get_temp_dir() . DIRECTORY_SEPARATOR . strtolower(self::$codename),
+			'logDir'           => sys_get_temp_dir() . DIRECTORY_SEPARATOR . strtolower(self::$codename) . '_logs',
 			'logTypes'         => array('action', 'error', 'debug', 'exception'),
 			'configDir'        => 'config',
 			'timezone'         => 'Asia/Shanghai',
 			'charset'          => 'UTF-8',
-			'dataEngine'       => '\Alcedoo\Mongo',
+			'dataEngine'       => '\Alcedoo\Mysql',
 			'router'           => array('\Alcedoo\Router', 'routeController'),
 			'autoloader'       => array('\Alcedoo\Env', 'defaultAutoloader'),
 			'errorHandler'     => array('\Alcedoo\Env', 'defaultErrorHandler'),
@@ -159,9 +160,12 @@ class Env{
 	 * Default shutdown function for framework
 	 */
 	public static function defaultShutdownFunction(){
-		echo "<pre>";
-		print_r(error_get_last());
-		echo "</pre>";
+		$lastError = error_get_last();
+		if ($lastError){
+			echo "<pre>";
+			print_r($lastError);
+			echo "</pre>";
+		}
 	}
 	
 	/**

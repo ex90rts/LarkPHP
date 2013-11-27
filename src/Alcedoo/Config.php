@@ -21,8 +21,8 @@ class Config{
      * Construct function, read all configuration by default
      */
     private function __construct(){
-        $project = Env::getOption('project');
     	$projectPath = Env::getOption('projectPath');
+    	$project = Env::getOption('project');
     	$configDir = Env::getOption('configDir');
     	$configPath = $projectPath . DIRECTORY_SEPARATOR . $project . DIRECTORY_SEPARATOR . $configDir;
     	

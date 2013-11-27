@@ -5,6 +5,8 @@ use Alcedoo\Controller;
 use Knock\Model\User;
 use Alcedoo\Mysql\Query;
 use Alcedoo\Env;
+use Alcedoo\Request;
+use Alcedoo\Response;
 
 class Index extends Controller{
 	public $conn;
@@ -17,36 +19,25 @@ class Index extends Controller{
 			),
 			array(AC_GRANT,
 				'verbs' => array('POST'),
-				'groups' => array('Manager'),
+				'groups' => array('Manager', 'Guest'),
 			),
 			array(AC_GRANT,
 				'verbs' => array('POST'),
 				'groups' => array('Manager'),
 			),
 			array(AC_GRANT,
-				'roles' => array('ADMIN'),
-				'groups' => array('Manager'),
-			),
-			array(AC_DENY,
 				'roles' => array(ROLE_GUEST),
 			),
 		);
 	}
 	
-	public function actionView(){
+	public function view(Request $req, Response $res){
 		$user = new User();
 		
-		$this->res->addDebugInfo('name', $user);
-		$this->res->printr($_SERVER);
-		die;
 		$user = new User();
 		$list = $user->findDataByFilter();
 		
-		foreach ($list as $item){
-			echo $item->username.'<br />';
-			echo $item->password.'<br />';
-			echo $item->created.'<br />';
-		}
+		$res->vardump($list);
 		/*
 		$user->username = 'viki';
 		$user->password = '123456';
@@ -62,16 +53,14 @@ class Index extends Controller{
 		echo "this is the index:view action";
 	}
 	
-	public function actionTest(){
-		$query = new Query();
-		$query->table('Users')->select();
-		$mysql = Env::getInstance('Alcedoo\Mysql');
+	public function test(){
+		$query = Query::init()->table('Users')->select();
+		$mysql = Env::getInstance('Mysql');
 		$res = $mysql->exec($query);
-		var_dump($res);
-		echo "this is the test view";
+		$this->res->json($res);
 	}
 	
-	public function actionPure(){
+	public function pure(){
 		if (!$this->conn){
 			$this->conn = mysqli_connect('127.0.0.1', 'root', '123456', 'blog', '3306');
 		}
@@ -81,7 +70,7 @@ class Index extends Controller{
 		}
 	}
 	
-	public function ActionNothing(){
+	public function nothing(){
 		echo 'nothing';
 	}
 }

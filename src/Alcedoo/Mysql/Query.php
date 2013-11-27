@@ -46,6 +46,17 @@ class Query{
     public function __construct(array $options=array()){
         $this->_options = $options;
     }
+    
+    /**
+     * Convinient method for chained calling
+     * 
+     * @param array $options
+     * @return Query
+     */
+    public static function init(array $options=array()){
+    	$class = __CLASS__;
+    	return new $class($options);
+    }
 
     /**
      * Magic method for get class private variables

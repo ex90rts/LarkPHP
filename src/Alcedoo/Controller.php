@@ -4,11 +4,9 @@ namespace Alcedoo;
 use Alcedoo\Request as Request;
 use Alcedoo\Response as Response;
 use Alcedoo\Access;
+use Alcedoo\Exception\AccessDeniedException;
 
 abstract class Controller{
-	
-	const USER_GROUP_GUEST = 0;
-	const USER_GROUP_GRANT = 1;
 	
 	/**
 	 * Var for Alcedoo\Request instance
@@ -33,18 +31,12 @@ abstract class Controller{
 	 * @var Alcedoo\Logger
 	 */
 	protected $logger;
-	
-	/**
-	 * Var for cache Model instances in php script
-	 * @var Array
-	 */
-	protected $models;
-	
+
 	/**
 	 * Can user access this time
 	 * @var boolean
 	 */
-	protected $access = true;
+	protected $access = false;
 	
 	/**
 	 * Construct function
@@ -57,20 +49,6 @@ abstract class Controller{
 		$this->res    = $response;
 		$this->ajax   = $request->ajax;
 		$this->logger = Env::getInstance('Logger');
-		$this->models = array();
-	}
-	
-	/**
-	 * Convinient method to get database model
-	 * @param String $modelName
-	 */
-	final function model($modelName){
-		$modelName = Env::getOption('namespace').'\Model\\'.$modelName;
-		if (!isset($this->models[$modelName])){
-			$this->models[$modelName] = new $modelName();
-		}
-	
-		return $this->models[$modelName];
 	}
 	
 	/**
@@ -89,7 +67,7 @@ abstract class Controller{
 	}
 	
 	/**
-	 * User access filter
+	 * User access filter, default event when beforeAction
 	 */
 	protected function filterAccess(){
 		$access = new Access($this->accessRules(), $this->userEntry(), $this->req);
@@ -97,16 +75,34 @@ abstract class Controller{
 	}
 	
 	/**
-	 * Things need to do before invoke controller action,
-	 * such as get current user and check access
+	 * Defualt action when access denied
 	 */
-	public function beforeAction(){
-		$this->filterAccess();
-		return $this->access;
+	protected function accessDenied(){
+		throw new AccessDeniedException("Access denied when try to execute {$this->req->controller}::{$this->req->action}");
 	}
 	
 	/**
-	 * Things need to do after invoke controller action
+	 * Things need to do(Or Events need to perform) before invoke controller action
+	 */
+	public function beforeAction(){
+		$this->filterAccess();
+	}
+	
+	/**
+	 * Execute the action router found
+	 * 
+	 * @param string $action
+	 */
+	public function executeAction($action){
+		if ($this->access){
+			$this->$action($this->req, $this->res);
+		}else{
+			$this->accessDenied();
+		}
+	}
+	
+	/**
+	 * Things need to do(Or Events need to perform) after invoke controller action
 	 */
 	public function afterAction(){
 		

@@ -49,23 +49,22 @@ class Router{
     }
     
     public static function routeController(){
-    	$request = new Request();
-        $response = new Response();
+    	$req = new Request();
+        $res = new Response();
     	
     	//controller//action//id
     	try{
-    		$partsUcfirst = array(
+    		$parts = array(
     			Env::getOption('namespace'),
     			'Controller',
-    			ucfirst($request->controller),
+    			ucfirst($req->controller),
     		);
-    		$class = implode('\\', $partsUcfirst);
-    		$action = "action".ucfirst($request->action);
+    		$class = implode('\\', $parts);
+    		$action = ucfirst($req->action);
 		
-    		$controller = new $class($request, $response);
-    		if ($controller->beforeAction()){
-    			$controller->$action();
-    		}
+    		$controller = new $class($req, $res);
+    		$controller->beforeAction();
+    		$controller->executeAction($action);
     		$controller->afterAction();
     	}catch(AlcedooException $e){
             echo '<pre>';

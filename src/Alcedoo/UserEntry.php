@@ -18,7 +18,7 @@ class UserEntry{
 	public function __construct($uniqid = '', $role = null, $groups = array(), Model $model=null){
 		$this->uniqid = $uniqid == '' ? uniqid() : $uniqid;
 		$this->role = $role == null ? ROLE_GUEST : $role;
-		$this->groups = $groups;
+		$this->groups = (array)$groups;
 		$this->model = $model;
 	}
 	

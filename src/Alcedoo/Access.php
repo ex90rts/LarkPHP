@@ -72,31 +72,32 @@ class Access{
 	 * @return boolean return true if grant, false if denied
 	 */
 	public function filter(){
-		var_dump($this->user);
 		$result = AC_DENY;
 		foreach ($this->rules as $rule){
 			$type = $rule[0];
 			$state = true;
 			if (!empty($rule['verbs']) && is_array($rule['verbs'])){
-				$state &= in_array($this->request->method, $rule['verbs'], true);
+				$state = $state && in_array($this->request->method, $rule['verbs'], true);
 			}
 			if ( !empty($rule['cruds']) && is_array($rule['cruds'])){
-				$state &= in_array($this->request->crud, $rule['cruds'], true);
+				$state = $state && in_array($this->request->crud, $rule['cruds'], true);
 			}
 			if (!empty($rule['roles']) && is_array($rule['roles'])){
-				$state &= in_array($this->user->role, $rule['roles'], true);
+				$state = $state && in_array($this->user->role, $rule['roles'], true);
 			}
 			if (!empty($rule['groups']) && is_array($rule['groups'])){
-				$state &= (count(array_merge($rule['groups'], $this->user->groups)) < (count($rule['groups'])+count($this->user->groups)));
+				$merged = count(array_merge($rule['groups'], $this->user->groups));
+				$alone = count($rule['groups'])+count($this->user->groups);
+				$state = $state && ($merged < $merged);
 			}
 			if (!empty($rule['actions']) && is_array($rule['actions'])){
-				$state &= in_array($this->request->action, $rule['actions'], true);
+				$state = $state && in_array($this->request->action, $rule['actions'], true);
 			}
 			if (!empty($rule['users']) && is_array($rule['users'])){
-				$state &= in_array($this->user->uniqid, $rule['users'], true);
+				$state = $state && in_array($this->user->uniqid, $rule['users'], true);
 			}
 			if (!empty($rule['ips']) && is_array($rule['ips'])){
-				$state &= in_array($this->request->ip, $rule['ips'], true);
+				$state = $state && in_array($this->request->ip, $rule['ips'], true);
 			}
 			
 			if ($type == AC_GRANT){
