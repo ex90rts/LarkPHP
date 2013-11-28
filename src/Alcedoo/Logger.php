@@ -1,11 +1,11 @@
 <?php
-namespace Alcedoo;
+namespace Lark;
 
-use Alcedoo\Util;
-use Alcedoo\Exception\CloneNotAllowedException;
-use Alcedoo\Exception\PathNotFoundException;
-use Alcedoo\Exception\WrongParamException;
-use Alcedoo\Exception\WrongLogTypeException;
+use Lark\Util;
+use Lark\Exception\CloneNotAllowedException;
+use Lark\Exception\PathNotFoundException;
+use Lark\Exception\WrongParamException;
+use Lark\Exception\WrongLogTypeException;
 
 class Logger{
 	/**

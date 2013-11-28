@@ -1,22 +1,22 @@
 <?php
-namespace Alcedoo;
+namespace Lark;
 
-use Alcedoo\Request as Request;
-use Alcedoo\Response as Response;
-use Alcedoo\Access;
-use Alcedoo\Exception\AccessDeniedException;
+use Lark\Request as Request;
+use Lark\Response as Response;
+use Lark\Access;
+use Lark\Exception\AccessDeniedException;
 
 abstract class Controller{
 	
 	/**
-	 * Var for Alcedoo\Request instance
-	 * @var Alcedoo\Request
+	 * Var for Lark\Request instance
+	 * @var Lark\Request
 	 */
 	protected $req;
 	
 	/**
-	 * Var for Alcedoo\Response instance
-	 * @var Alcedoo\Response
+	 * Var for Lark\Response instance
+	 * @var Lark\Response
 	 */
 	protected $res;
 	
@@ -27,8 +27,8 @@ abstract class Controller{
 	protected $ajax = false;
 	
 	/**
-	 * Var for Alcedoo|Logger instance
-	 * @var Alcedoo\Logger
+	 * Var for Lark|Logger instance
+	 * @var Lark\Logger
 	 */
 	protected $logger;
 

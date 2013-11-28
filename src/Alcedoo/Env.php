@@ -1,7 +1,7 @@
 <?php
-namespace Alcedoo;
+namespace Lark;
 
-use Alcedoo\Exception\NoAutoloaderDefinedException;
+use Lark\Exception\NoAutoloaderDefinedException;
 
 require_once 'Constants.php';
 
@@ -16,7 +16,7 @@ class Env{
 	 * The name of this framework
 	 * @var string
 	 */
-    public static $codename = 'Alcedoo';
+    public static $codename = 'Lark';
 
     /**
      * Current version of this framework
@@ -53,7 +53,7 @@ class Env{
 			'project'          => 'test',
 			'projectName'      => 'Test Project',
 			'projectPath'      => dirname(__FILE__).'/../../',
-			'namespace'        => 'Alcedootest',
+			'namespace'        => 'Larktest',
 			'platform'         => !empty($_SERVER["{$upperCodename}_PLATFORM"]) ? $_SERVER["{$upperCodename}_PLATFORM"] : 'foo',
 			'libPath'          => dirname(__FILE__).'/../',
 			'logDir'           => sys_get_temp_dir() . DIRECTORY_SEPARATOR . strtolower(self::$codename) . '_logs',
@@ -61,15 +61,15 @@ class Env{
 			'configDir'        => 'config',
 			'timezone'         => 'Asia/Shanghai',
 			'charset'          => 'UTF-8',
-			'dataEngine'       => '\Alcedoo\Mysql',
-			'router'           => array('\Alcedoo\Router', 'routeController'),
-			'autoloader'       => array('\Alcedoo\Env', 'defaultAutoloader'),
-			'errorHandler'     => array('\Alcedoo\Env', 'defaultErrorHandler'),
+			'dataEngine'       => '\Lark\Mysql',
+			'router'           => array('\Lark\Router', 'routeController'),
+			'autoloader'       => array('\Lark\Env', 'defaultAutoloader'),
+			'errorHandler'     => array('\Lark\Env', 'defaultErrorHandler'),
 			'error_reporting'  => E_ALL & ~E_NOTICE,
-			'shutdownFunction' => array('\Alcedoo\Env', 'defaultShutdownFunction'),
+			'shutdownFunction' => array('\Lark\Env', 'defaultShutdownFunction'),
 		);
 
-		$requestOptions = isset($_REQUEST['alcedoo']) ? $_REQUEST['alcedoo'] : array();
+		$requestOptions = isset($_REQUEST['Lark']) ? $_REQUEST['Lark'] : array();
 		foreach($options as $key=>$value){
 		    $default[$key] = $value;
 		    if (isset($requestOptions[$key])){

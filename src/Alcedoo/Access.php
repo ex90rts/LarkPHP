@@ -1,8 +1,8 @@
 <?php
-namespace Alcedoo;
+namespace Lark;
 
-use Alcedoo\Request;
-use Alcedoo\UserEntry;
+use Lark\Request;
+use Lark\UserEntry;
 
 /**
  * User access filter, every defined rules will checked equally, any rule hitted will be a yes

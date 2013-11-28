@@ -1,19 +1,19 @@
 <?php
-namespace Alcedoo;
+namespace Lark;
 
-use Alcedoo\Mysql\Query;
-use Alcedoo\Exception\MissingConfigException;
-use Alcedoo\Exception\CloneNotAllowedException;
-use Alcedoo\Exception\MysqlConnectFailedException;
-use Alcedoo\Exception\MysqlNoEnabledTransException;
-use Alcedoo\Exception\MysqlNoConnectionException;
-use Alcedoo\Exception\MysqlConfigException;
+use Lark\Mysql\Query;
+use Lark\Exception\MissingConfigException;
+use Lark\Exception\CloneNotAllowedException;
+use Lark\Exception\MysqlConnectFailedException;
+use Lark\Exception\MysqlNoEnabledTransException;
+use Lark\Exception\MysqlNoConnectionException;
+use Lark\Exception\MysqlConfigException;
 
 class Mysql{
 
 	/**
 	 * Singleton instance of Mysql
-	 * @var \Alcedoo\Mysql
+	 * @var \Lark\Mysql
 	 */
     private static $_instance;
 
@@ -91,7 +91,7 @@ class Mysql{
 
     /**
      * Static method to get singleton instance of this class
-     * @return \Alcedoo\Mysql
+     * @return \Lark\Mysql
      */
     public static function getInstance(){
         if (!self::$_instance){
@@ -110,8 +110,8 @@ class Mysql{
     }
 
     /**
-     * Get current connection info from \Alcedoo\Query instance
-     * @param \Alcedoo\Query $query
+     * Get current connection info from \Lark\Query instance
+     * @param \Lark\Query $query
      * @throws MysqlConfigException
      * @return Ambigous <mixed, multitype:string unknown Array >
      */

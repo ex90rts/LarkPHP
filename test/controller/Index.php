@@ -1,12 +1,12 @@
 <?php
 namespace Knock\Controller;
 
-use Alcedoo\Controller;
+use Lark\Controller;
 use Knock\Model\User;
-use Alcedoo\Mysql\Query;
-use Alcedoo\Env;
-use Alcedoo\Request;
-use Alcedoo\Response;
+use Lark\Mysql\Query;
+use Lark\Env;
+use Lark\Request;
+use Lark\Response;
 
 class Index extends Controller{
 	public $conn;

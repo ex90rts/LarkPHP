@@ -1,9 +1,9 @@
 <?php
-namespace Alcedoo;
+namespace Lark;
 
-use Alcedoo\Exception\MissingConfigException;
-use Alcedoo\Exception\CloneNotAllowedException;
-use Alcedoo\Exception\MongoException;
+use Lark\Exception\MissingConfigException;
+use Lark\Exception\CloneNotAllowedException;
+use Lark\Exception\MongoException;
 
 class Mongo{
 

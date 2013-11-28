@@ -1,7 +1,7 @@
 <?php
 namespace Knock\Model;
 
-use Alcedoo\Model;
+use Lark\Model;
 
 /**
  * The following properties are the avaliable fields in this model, use @property comment for code hinting

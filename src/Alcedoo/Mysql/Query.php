@@ -1,5 +1,5 @@
 <?php
-namespace Alcedoo\Mysql;
+namespace Lark\Mysql;
 
 class Query{
     const ACT_SELECT = 'SELECT';
@@ -82,7 +82,7 @@ class Query{
      * Set current query table
      *
      * @param unknown_type $table
-     * @return \Alcedoo\Mysql\Query
+     * @return \Lark\Mysql\Query
      */
     public function table($table){
         if (is_array($table)){
@@ -104,7 +104,7 @@ class Query{
      * Set current record hash key
      *
      * @param unknown_type $hashKey
-     * @return \Alcedoo\Mysql\Query
+     * @return \Lark\Mysql\Query
      */
     public function hash($hashKey){
         $this->_hashKey = $hashKey;
@@ -115,7 +115,7 @@ class Query{
      * Set action as Insert, set the insert record data
      *
      * @param array $record
-     * @return \Alcedoo\Mysql\Query
+     * @return \Lark\Mysql\Query
      */
     public function insert(array $record){
         $this->_action = self::ACT_INSERT;
@@ -131,7 +131,7 @@ class Query{
     /**
      * Set action as select, set the fields need to be in return record
      * @param array $fields
-     * @return \Alcedoo\Mysql\Query
+     * @return \Lark\Mysql\Query
      */
     public function select(array $fields=array()){
         $this->_action = self::ACT_SELECT;
@@ -154,7 +154,7 @@ class Query{
     /**
      * Set action as update, set the record to update
      * @param array $record
-     * @return \Alcedoo\Mysql\Query
+     * @return \Lark\Mysql\Query
      */
     public function update(array $record){
         $this->_action = self::ACT_UPDATE;
@@ -169,7 +169,7 @@ class Query{
 
     /**
      * Set action as delete
-     * @return \Alcedoo\Mysql\Query
+     * @return \Lark\Mysql\Query
      */
     public function delete(){
         $this->_action = self::ACT_DELETE;
@@ -179,7 +179,7 @@ class Query{
     /**
      * Set current query limti
      * @param int $limit
-     * @return \Alcedoo\Mysql\Query
+     * @return \Lark\Mysql\Query
      */
     public function limit($limit){
         $this->_limit = $limit;
@@ -189,7 +189,7 @@ class Query{
     /**
      * Set current query offset
      * @param int $offset
-     * @return \Alcedoo\Mysql\Query
+     * @return \Lark\Mysql\Query
      */
     public function offset($offset){
         $this->_offset = $offset;
@@ -199,7 +199,7 @@ class Query{
     /**
      * Set current query order
      * @param array $order
-     * @return \Alcedoo\Mysql\Query
+     * @return \Lark\Mysql\Query
      */
     public function order(array $order){
         $temp = array();
@@ -213,7 +213,7 @@ class Query{
 
     /**
      * Set current query conditions
-     * @return \Alcedoo\Mysql\Query
+     * @return \Lark\Mysql\Query
      */
     public function where(/**/){
         $former = $this->_where;
@@ -257,7 +257,7 @@ class Query{
     /**
      * Set current query group field
      * @param string $group
-     * @return \Alcedoo\Mysql\Query
+     * @return \Lark\Mysql\Query
      */
     public function group($group){
         $this->_group = $group;
@@ -267,7 +267,7 @@ class Query{
     /**
      * Set current having field
      * @param string $having
-     * @return \Alcedoo\Mysql\Query
+     * @return \Lark\Mysql\Query
      */
     public function having($having){
         $this->_having = $having;

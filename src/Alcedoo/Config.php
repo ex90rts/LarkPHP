@@ -1,8 +1,8 @@
 <?php
-namespace Alcedoo;
+namespace Lark;
 
-use Alcedoo\Env;
-use Alcedoo\Exception\CloneNotAllowedException;
+use Lark\Env;
+use Lark\Exception\CloneNotAllowedException;
 
 class Config{
     /**

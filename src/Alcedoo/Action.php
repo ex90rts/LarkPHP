@@ -1,9 +1,9 @@
 <?php
-namespace Alcedoo;
+namespace Lark;
 
-use Alcedoo\Request;
-use Alcedoo\Response;
-use Alcedoo\Exception\ActionValidationException;
+use Lark\Request;
+use Lark\Response;
+use Lark\Exception\ActionValidationException;
 
 abstract class Action{
 	/**
@@ -16,20 +16,20 @@ abstract class Action{
     const VALID_REGEX = 'valid_regex';
 
     /**
-     * Var for Alcedoo\Request instance
-     * @var Alcedoo\Request
+     * Var for Lark\Request instance
+     * @var Lark\Request
      */
     protected $request;
 
     /**
-     * Var for Alcedoo\Response instance
-     * @var Alcedoo\Response
+     * Var for Lark\Response instance
+     * @var Lark\Response
      */
     protected $response;
 
     /**
-     * Var for Alcedoo|Logger instance
-     * @var Alcedoo\Logger
+     * Var for Lark|Logger instance
+     * @var Lark\Logger
      */
     protected $logger;
 
@@ -47,8 +47,8 @@ abstract class Action{
 
     /**
      * Construct function
-     * @param Alcedoo\Request $request
-     * @param Alcedoo\Response $response
+     * @param Lark\Request $request
+     * @param Lark\Response $response
      */
     public function __construct(Request $request, Response $response){
         $this->request = $request;
@@ -81,7 +81,7 @@ abstract class Action{
 
     /**
      * Convinient method to get Logger instance
-     * @return instance of Alcedoo\Logger
+     * @return instance of Lark\Logger
      */
     final function logger(){
         if (empty($this->logger)){

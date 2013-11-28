@@ -1,5 +1,5 @@
 <?php
-namespace Alcedoo\Uniqid;
+namespace Lark\Uniqid;
 
 interface DbengineInterface{
     public function insert($type, $id);

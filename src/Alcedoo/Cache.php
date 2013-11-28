@@ -1,8 +1,8 @@
 <?php
-namespace Alcedoo;
+namespace Lark;
 
-use Alcedoo\Exception\CacheServiceNotSupportException;
-use Alcedoo\Exception\WrongParamException;
+use Lark\Exception\CacheServiceNotSupportException;
+use Lark\Exception\WrongParamException;
 
 class Cache{
     /**
@@ -24,7 +24,7 @@ class Cache{
      */
     public function __construct($adapterName){
         $configName = strtolower($adapterName);
-        $adapterName = 'Alcedoo\Cache\Adapter\\'.$adapterName;
+        $adapterName = 'Lark\Cache\Adapter\\'.$adapterName;
         if (!call_user_func(array($adapterName, 'isSupport'))){
             throw new CacheServiceNotSupportException(sprintf('adapter name %s', $adapterName));
         }

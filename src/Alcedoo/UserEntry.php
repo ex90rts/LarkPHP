@@ -1,7 +1,7 @@
 <?php
-namespace Alcedoo;
+namespace Lark;
 
-use Alcedoo\Model;
+use Lark\Model;
 
 class UserEntry{
 	/**

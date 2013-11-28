@@ -1,8 +1,8 @@
 <?php
-namespace Alcedoo\Exception;
+namespace Lark\Exception;
 
-use Alcedoo\AlcedooException;
+use Lark\Exception;
 
-class MysqlNoConnectionException extends AlcedooException{
+class MysqlNoConnectionException extends Exception{
     
 }

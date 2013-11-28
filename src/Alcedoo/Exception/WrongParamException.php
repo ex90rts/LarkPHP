@@ -1,8 +1,8 @@
 <?php
-namespace Alcedoo\Exception;
+namespace Lark\Exception;
 
-use Alcedoo\AlcedooException;
+use Lark\Exception;
 
-class WrongParamException extends AlcedooException{
+class WrongParamException extends Exception{
     
 }

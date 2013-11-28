@@ -1,7 +1,7 @@
 <?php
 namespace Knock\Model;
 
-use Alcedoo\Model;
+use Lark\Model;
 
 /**
  * User model

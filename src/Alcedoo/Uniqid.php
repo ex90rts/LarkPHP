@@ -1,11 +1,11 @@
 <?php
-namespace Alcedoo;
+namespace Lark;
 
-use Alcedoo\Exception\UniqidDbengineNotSupportException;
+use Lark\Exception\UniqidDbengineNotSupportException;
 
-use Alcedoo\Exception\MissingConfigException;
-use Alcedoo\Exception\CreateUniqidFailedException;
-use Alcedoo\Exception\UniqidTypeUndefinedException;
+use Lark\Exception\MissingConfigException;
+use Lark\Exception\CreateUniqidFailedException;
+use Lark\Exception\UniqidTypeUndefinedException;
 
 class Uniqid{
     private static $_isInited = false;
@@ -44,7 +44,7 @@ class Uniqid{
 	            throw new UniqidDbengineNotSupportException(sprintf('dbengine only support %s, %s given', implode('/', self::$_supportDbengines), $config['dbengine']));
 	        }
 	        
-	        $className = 'Alcedoo\Uniqid\Dbengine\\' . ucfirst($config['dbengine']);
+	        $className = 'Lark\Uniqid\Dbengine\\' . ucfirst($config['dbengine']);
 	        $realClass = new \ReflectionClass($className);
 	        self::$_dbengine = $realClass->newInstance($config['table']);
 	        

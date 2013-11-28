@@ -1,5 +1,5 @@
 <?php
-namespace Alcedoo\Cache;
+namespace Lark\Cache;
 
 interface AdapterInterface{
     public static function isSupport();     

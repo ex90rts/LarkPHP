@@ -1,8 +1,8 @@
 <?php
-namespace Alcedoo\Cache\Adapter;
+namespace Lark\Cache\Adapter;
 
-use Alcedoo\Cache\AdapterInterface;
-use Alcedoo\Util;
+use Lark\Cache\AdapterInterface;
+use Lark\Util;
 
 class Memcached implements AdapterInterface{
     /**

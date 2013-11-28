@@ -1,8 +1,8 @@
 <?php
-namespace Alcedoo\Exception;
+namespace Lark\Exception;
 
-use Alcedoo\AlcedooException;
+use Lark\Exception;
 
-class CreateUniqidFailedException extends AlcedooException{
+class CreateUniqidFailedException extends Exception{
     
 }

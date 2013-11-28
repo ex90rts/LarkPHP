@@ -1,9 +1,9 @@
 <?php
-namespace Alcedoo\Uniqid\Dbengine;
+namespace Lark\Uniqid\Dbengine;
 
-use Alcedoo\Util;
-use Alcedoo\Env;
-use Alcedoo\Uniqid\DbengineInterface;
+use Lark\Util;
+use Lark\Env;
+use Lark\Uniqid\DbengineInterface;
 
 class Mongo implements DbengineInterface{
 	

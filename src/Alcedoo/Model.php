@@ -1,14 +1,14 @@
 <?php
-namespace Alcedoo;
+namespace Lark;
 
-use Alcedoo\Mysql\Query;
-use Alcedoo\Model\DataList;
+use Lark\Mysql\Query;
+use Lark\Model\DataList;
 
 abstract class Model{
 	/**
 	 * Holding the mysql instance
 	 * 
-	 * @var Alcedoo\Mysql
+	 * @var Lark\Mysql
 	 */
 	private $_mysql;
 	
@@ -189,7 +189,7 @@ abstract class Model{
      * @param array $filter
      * @param array $sort
      * @param int $limit default limit is 1000
-     * @return \Alcedoo\Model\DataList|boolean
+     * @return \Lark\Model\DataList|boolean
      */
     public function findDataByFilter($filter=array(), $sort=array(), $limit=1000){
     	$query = new Query();

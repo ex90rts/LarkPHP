@@ -1,8 +1,8 @@
 <?php
-namespace Alcedoo\Exception;
+namespace Lark\Exception;
 
-use Alcedoo\AlcedooException;
+use Lark\Exception;
 
-class ActionValidationException extends AlcedooException{
+class ActionValidationException extends Exception{
 
 }

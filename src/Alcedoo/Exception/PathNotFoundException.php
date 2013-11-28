@@ -1,8 +1,8 @@
 <?php
-namespace Alcedoo\Exception;
+namespace Lark\Exception;
 
-use Alcedoo\AlcedooException;
+use Lark\Exception;
 
-class PathNotFoundException extends AlcedooException{
+class PathNotFoundException extends Exception{
     
 }

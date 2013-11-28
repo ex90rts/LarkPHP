@@ -1,5 +1,5 @@
 <?php
-namespace Alcedoo;
+namespace Lark;
 
 class Template{
 	/**

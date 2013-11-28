@@ -1,11 +1,11 @@
 <?php
-namespace Alcedoo;
+namespace Lark;
 
-use Alcedoo\Exception\PathNotFoundException;
+use Lark\Exception\PathNotFoundException;
 
 class Response{
     /**
-     * Current response charset, default value from Alcedoo\Env::options
+     * Current response charset, default value from Lark\Env::options
      * @var string
      */
     private $_charset;

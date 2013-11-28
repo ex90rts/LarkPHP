@@ -1,10 +1,10 @@
 <?php
-require_once '../src/Alcedoo/Env.php';
+require_once '../src/Lark/Env.php';
 
-use Alcedoo\Env as AlcedooEnv;
+use Lark\Env as LarkEnv;
 
 $options = array(
 	'namespace' => 'Knock',
 );
-AlcedooEnv::init($options);
-AlcedooEnv::execute();
+LarkEnv::init($options);
+LarkEnv::execute();

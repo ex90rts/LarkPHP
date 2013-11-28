@@ -1,9 +1,9 @@
 <?php
-namespace Alcedoo\Cache\Adapter;
+namespace Lark\Cache\Adapter;
 
-use Alcedoo\Cache\AdapterInterface;
-use Alcedoo\Util;
-use Alcedoo\Exception\PathNotFoundException;
+use Lark\Cache\AdapterInterface;
+use Lark\Util;
+use Lark\Exception\PathNotFoundException;
 
 class FileCache implements AdapterInterface {
 	/**

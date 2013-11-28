@@ -1,8 +1,8 @@
 <?php
-namespace Alcedoo\Exception;
+namespace Lark\Exception;
 
-use Alcedoo\AlcedooException;
+use Lark\Exception;
 
-class MysqlConfigException extends AlcedooException{
+class MysqlConfigException extends Exception{
     
 }

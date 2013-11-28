@@ -1,7 +1,7 @@
 <?php
 namespace Knock\Controller;
 
-use Alcedoo\Controller;
+use Lark\Controller;
 
 class Post extends Controller{
 	public function Index(){

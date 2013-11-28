@@ -1,12 +1,12 @@
 <?php
 namespace Knock\Action\Post;
 
-use Alcedoo\Action;
-use Alcedoo\Env;
-use Alcedoo\Constants;
-use Alcedoo\Util;
-use Alcedoo\Mysql\Query;
-use Alcedoo\Uniqid;
+use Lark\Action;
+use Lark\Env;
+use Lark\Constants;
+use Lark\Util;
+use Lark\Mysql\Query;
+use Lark\Uniqid;
 
 class Newpost extends Action{
 	function execute(){
@@ -22,7 +22,7 @@ class Newpost extends Action{
 			$tags = $request->tags;
 			$content = $request->content;
 			
-			$mysql = Env::getInstance('\Alcedoo\Mysql');
+			$mysql = Env::getInstance('\Lark\Mysql');
 			$mysql->transaction();
 			
 			$uniqid = new Uniqid();

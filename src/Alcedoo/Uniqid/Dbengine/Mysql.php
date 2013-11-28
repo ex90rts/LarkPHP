@@ -1,10 +1,10 @@
 <?php
-namespace Alcedoo\Uniqid\Dbengine;
+namespace Lark\Uniqid\Dbengine;
 
-use Alcedoo\Mysql\Query;
-use Alcedoo\Env;
-use Alcedoo\Util;
-use Alcedoo\Uniqid\DbengineInterface;
+use Lark\Mysql\Query;
+use Lark\Env;
+use Lark\Util;
+use Lark\Uniqid\DbengineInterface;
 
 class Mysql implements DbengineInterface{
     

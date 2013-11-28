@@ -1,10 +1,10 @@
 <?php
 namespace Knock\Action\Post;
 
-use Alcedoo\Env;
-use Alcedoo\Action;
+use Lark\Env;
+use Lark\Action;
 use Michelf\Markdown;
-use Alcedoo\Mysql\Query;
+use Lark\Mysql\Query;
 
 class View extends Action{
 	function execute(){
@@ -12,7 +12,7 @@ class View extends Action{
 		$response = $this->response;
 		
 		$uid = $request->uid;
-		$mysql = Env::getInstance('\Alcedoo\Mysql');
+		$mysql = Env::getInstance('\Lark\Mysql');
 		$query = new Query();
 		$query->table('Posts')->select()->where(array('uid'=>$request->uid));
 		$article = $mysql->exec($query);

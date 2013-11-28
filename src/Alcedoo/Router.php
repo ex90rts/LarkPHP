@@ -1,10 +1,10 @@
 <?php
-namespace Alcedoo;
+namespace Lark;
 
-use Alcedoo\Env;
-use Alcedoo\Request;
-use Alcedoo\Response;
-use Alcedoo\Exception\PathNotFoundException;
+use Lark\Env;
+use Lark\Request;
+use Lark\Response;
+use Lark\Exception\PathNotFoundException;
 
 class Router{
     /**
@@ -35,9 +35,9 @@ class Router{
 	            $action->redirect(REDIRECT_PERMISSION);
 	        }
 	        $action->finish();
-        }catch(AlcedooException $e){
+        }catch(Exception $e){
             echo '<pre>';
-            echo 'Alcedoo Defined Exception:'."\r\n";
+            echo 'Lark Defined Exception:'."\r\n";
             print_r($e);
             echo '</pre>';
         }catch(\Exception $e) {
@@ -66,9 +66,9 @@ class Router{
     		$controller->beforeAction();
     		$controller->executeAction($action);
     		$controller->afterAction();
-    	}catch(AlcedooException $e){
+    	}catch(Exception $e){
             echo '<pre>';
-            echo 'Alcedoo Defined Exception:'."\r\n";
+            echo 'Lark Defined Exception:'."\r\n";
             print_r($e);
             echo '</pre>';
         }catch(\Exception $e) {

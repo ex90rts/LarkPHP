@@ -1,5 +1,5 @@
 <?php
-namespace Alcedoo;
+namespace Lark;
 
 /**
  * Class to gather all common util functions together
@@ -21,7 +21,7 @@ class Util{
     
     /**
      * Get current system unix timestamp
-     * @return \Alcedoo\unknown_type
+     * @return \Lark\unknown_type
      */
     public static function getNow(){
         if (empty(self::$_now)) {

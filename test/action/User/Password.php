@@ -1,9 +1,9 @@
 <?php
 namespace Knock\Action\User;
 
-use Alcedoo\Env;
-use Alcedoo\Action;
-use Alcedoo\Constants;
+use Lark\Env;
+use Lark\Action;
+use Lark\Constants;
 
 class Password extends Action{
 

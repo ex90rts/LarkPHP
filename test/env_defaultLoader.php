@@ -1,7 +1,7 @@
 <?php
-require_once '../src/Alcedoo/Env.php';
+require_once '../src/Lark/Env.php';
 
-use Alcedoo\Env as SolomoEnv;
+use Lark\Env as SolomoEnv;
 
 SolomoEnv::init();
 SolomoEnv::execute();

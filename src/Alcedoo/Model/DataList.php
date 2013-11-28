@@ -1,7 +1,7 @@
 <?php
-namespace Alcedoo\Model;
+namespace Lark\Model;
 
-use Alcedoo\Model;
+use Lark\Model;
 
 class DataList implements \Iterator{
 	
