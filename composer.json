@@ -1,6 +1,6 @@
 {
     "config": {
-        "vendor-dir" : "src/vendor"
+        "vendor-dir" : "library/vendor"
     },
     "require": {
         "twig/twig": "1.*",
