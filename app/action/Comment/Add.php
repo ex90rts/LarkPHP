@@ -1,8 +1,8 @@
 <?php
-namespace Knock\Action\Comment;
+namespace Foo\Action\Comment;
 
 use Lark\Action;
-use Knock\Model\Comment;
+use Foo\Model\Comment;
 use Lark\Uniqid;
 
 class Add extends Action{

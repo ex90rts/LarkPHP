@@ -1,5 +1,5 @@
 <?php
-namespace Knock\Controller;
+namespace Foo\Controller;
 
 use Lark\Controller;
 

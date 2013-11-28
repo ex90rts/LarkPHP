@@ -1,5 +1,5 @@
 <?php
-namespace Knock\Action\User;
+namespace Foo\Action\User;
 
 use Lark\Action;
 

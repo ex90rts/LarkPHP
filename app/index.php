@@ -1,10 +1,10 @@
 <?php
-require_once '../src/Lark/Env.php';
+require_once '../library/Lark/Env.php';
 
 use Lark\Env as LarkEnv;
 
 $options = array(
-	'namespace' => 'Knock',
+	'namespace' => 'Foo',
 );
 LarkEnv::init($options);
 LarkEnv::execute();

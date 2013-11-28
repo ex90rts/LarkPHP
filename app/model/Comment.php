@@ -1,5 +1,5 @@
 <?php
-namespace Knock\Model;
+namespace Foo\Model;
 
 use Lark\Model;
 

@@ -1,5 +1,5 @@
 <?php
-namespace Knock\Action\Post;
+namespace Foo\Action\Post;
 
 use Lark\Action;
 use Michelf\Markdown;

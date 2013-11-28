@@ -1,8 +1,8 @@
 <?php
-namespace Knock\Controller;
+namespace Foo\Controller;
 
 use Lark\Controller;
-use Knock\Model\User;
+use Foo\Model\User;
 use Lark\Mysql\Query;
 use Lark\Env;
 use Lark\Request;

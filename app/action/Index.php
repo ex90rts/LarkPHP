@@ -1,5 +1,5 @@
 <?php
-namespace Knock\Action;
+namespace Foo\Action;
 
 use Lark\Env;
 use Lark\Action;
