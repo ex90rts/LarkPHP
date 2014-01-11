@@ -278,13 +278,13 @@ class Mysql{
         $this->_lastConnKey = $connKey;
         $this->_lastConn = $mysqli;
 
-        $sql = $query->makeSql();
+        $sql = $query->makeSql($mysqli);
         $mapTables = $query->tables;
         $realTables = $connInfo['tables'];
         foreach ($mapTables as $mapTable){
             $sql = str_replace("@{$mapTable}", $realTables[$mapTable], $sql);
         }
- 
+
         $result = $mysqli->query($sql);
         if ($query->action==Query::ACT_SELECT){
             if ($result instanceof \mysqli_result){

@@ -16,15 +16,11 @@ class Request{
     
     private $_post;
     
-    private $_files;
-    
     public $method;
     
     public $controller;
     
     public $action;
-    
-    //public $id = 0;
     
     public $ip = null;
     
@@ -33,7 +29,14 @@ class Request{
     public $cmdmode = false;
     
     /**
-     * Construct function, assign $_GET, $_POST  and $_FILES data by default
+     * Construct method, do these following things: 
+     *     <ul>
+     * 	       <li>assign $_GET, $_POST data to instance properties</li>
+     *         <li>check the running mode is CLI or HTTP</li> 
+     *         <li>check request method is GET or POST/PUT/DELETE</li>
+     *         <li>assign RAW post data as post property if needed</li>
+     *         <li>check if is requested by ajax</li>
+     *     </ul>
      */ 
     public function __construct(){
     	$this->cmdmode = App::$cmdmode;
@@ -55,8 +58,6 @@ class Request{
 	    			$this->_post = $_POST;
 	    		}
 	    	}
-	    	
-	    	$this->_files = $_FILES;
     	}
   	
     	if(!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest') {
@@ -70,15 +71,13 @@ class Request{
      * @return mixed
      */
 	public function __set($name, $value){
-    	if (in_array($name, array('_get', '_post', '_files', 'method', 'controller', 'action', 'ip', 'ajax', 'cmdmode'), true)){
-    		trigger_error("can not set response property with reserved key {$name}", E_USER_WARNING);
-    	}
-    	
         $this->_get[$name] = $value;
     }
     
     /**
      * Possible to get the front side value by read a instance attribte
+     * 
+     * @deprecated please using ->get() or ->post() method instead
      * @param string $name
      * @throws \Exception
      * @return mixed
@@ -92,9 +91,6 @@ class Request{
         }
         if (isset($this->_post[$name])){
             return $this->_post[$name];
-        }
-        if (isset($this->_files[$name])){
-            return $this->_files[$name];
         }
         return null;
     }
@@ -112,10 +108,64 @@ class Request{
         if (isset($this->_post[$name])){
             return true;
         }
-        if (isset($this->_files[$name])){
-            return true;
-        }
         return false;
+    }
+    
+    /**
+     * Read $_GET variable value after sanitized
+     *
+     * @param string $name
+     * @param string $default Only support string like value
+     * @return mixed
+     */
+    public function get($name='', $default=''){
+    	$value = $this->_get;
+    	if ($name!='' && isset($this->_get[$name])){
+    		$value = $this->_get[$name];
+    	}
+    	 
+    	$value = Util::inputFilter($value);
+    	if (!$value && $default){
+    		$value = $default;
+    	}
+    	
+    	return $value;
+    }
+    
+    /**
+     * Read $_POST variable value after sanitized
+     *
+     * @param string $name
+     * @param string $default Only support string like value
+     * @return mixed
+     */
+    public function post($name='', $default=''){
+    	$value = $this->_post;
+    	if ($name!='' && isset($this->_post[$name])){
+    		$value = $this->_post[$name];
+    	}
+    	 
+    	$value = Util::inputFilter($value);
+    	if (!$value && $default){
+    		$value = $default;
+    	}
+    	
+    	return $value;
+    }
+    
+    /**
+     * Read $_FIELS variable value
+     *
+     * @param string $name
+     * @return mixed
+     */
+    public function files($name){
+    	$value = false;
+    	if (isset($_FILES[$name])){
+    		$value = $_FILES[$name];
+    	}
+    	
+    	return $value;
     }
     
     /**
@@ -140,9 +190,9 @@ class Request{
      */
     public function getCookie($key=null){
         if (is_string($key)){
-            return isset($_COOKIE[$key]) ? $_COOKIE[$key] : null;
+            return isset($_COOKIE[$key]) ? Util::inputFilter($_COOKIE[$key]) : null;
         }else{
-            return $_COOKIE;
+            return Util::inputFilter($_COOKIE);
         }
     }
     
@@ -185,19 +235,5 @@ class Request{
         }else{
             return $_SESSION;
         }
-    }
-    
-    /**
-     * Return the whole query string data
-     */
-    public function getQuery(){
-    	return $this->_get;
-    }
-    
-    /**
-     * Return the whole post data
-     */
-    public function getPost(){
-    	return $this->_post;
     }
 }

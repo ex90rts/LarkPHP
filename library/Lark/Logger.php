@@ -9,6 +9,12 @@ use Lark\Exception\WrongLogTypeException;
 
 class Logger{
 	/**
+	 * Flag for just log an empty line
+	 * @var string
+	 */
+	const EMPTY_LINE = 'EMPTY_LINE';
+	
+	/**
 	 * Var for holding singleton instance of this class
 	 * @var object
 	 */
@@ -120,6 +126,12 @@ class Logger{
         
         $logPath = $logTypeDir . DIRECTORY_SEPARATOR . $this->_logDate . '.log';
         
+        //just log an empty line
+        if ($content==self::EMPTY_LINE){
+        	error_log(PHP_EOL, 3, $logPath);
+        	return;
+        }
+        
         $contents = $this->_logContent[$type];
         
         $logTexts = array();
@@ -132,7 +144,7 @@ class Logger{
         
         $this->_logContent[$type] = array();
         
-        $logText = '[' . date("Y-m-d H:i:s", Util::getNow()) . '] ' . implode(' ', $logTexts) ."\r\n";
+        $logText = '[' . date("Y-m-d H:i:s", Util::getNow()) . '] ' . implode(' ', $logTexts) . PHP_EOL;
         
         return error_log($logText, 3, $logPath);
     }
