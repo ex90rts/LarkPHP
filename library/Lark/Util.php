@@ -91,6 +91,59 @@ class Util{
      * @return string
      */
     public static function mbcutString($title, $len, $pad='...'){
-    	return mb_strlen($title) > $len ? mb_substr($title, 0, $len) . $pad : $title;
+        $encoding = 'utf-8';
+    	return mb_strlen($title, $encoding) > $len ? mb_substr($title, 0, $len, $encoding) . $pad : $title;
+    }
+    
+    /**
+     * Filter any input data with filter_var* to prevent xss hacking
+     * 
+     * @param mixed $value
+     * @return mixed
+     */
+    public static function inputFilter($value){
+    	if (is_array($value)){
+    		return filter_var_array($value, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+    	}else{
+    		return filter_var($value, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+    	}
+    }
+    
+    /**
+     * Send request with CURL
+     * 
+     * @param string $url
+     * @param array $data
+     * @param string $contentType
+     * @return string|mixed
+     */
+    public static function makeRequest($url, $post=array(), $contentType='text/plain'){
+        if(empty($url)){
+            return false;
+        }
+    
+        $ch = curl_init();
+    
+        curl_setopt($ch, CURLOPT_URL, $url);
+        
+        if (!empty($post)){
+            if (is_array($post)){
+                curl_setopt($ch, CURLOPT_POST, count($post));
+                curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($post));
+            }else{
+                curl_setopt($ch, CURLOPT_POSTFIELDS, $post);
+                curl_setopt($ch, CURLOPT_HTTPHEADER, array("Content-Type: {$contentType}"));
+            }
+        }
+        
+        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($ch, CURLOPT_USERAGENT, "Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 6.1)");
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+    
+        $result = curl_exec($ch);
+        curl_close($ch);
+        
+        return $result;
     }
 }

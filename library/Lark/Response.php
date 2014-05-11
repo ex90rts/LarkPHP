@@ -35,6 +35,12 @@ class Response{
     private $_data = array();
     
     /**
+     * Global variables for template out of action
+     * @var array
+     */
+    private $_global = array();
+    
+    /**
      * Debug info need to send with response
      */
     private $_debuginfo;
@@ -50,6 +56,24 @@ class Response{
      * @var string
      */
     private $_action;
+    
+    /**
+     * Current visitor's language locale
+     * @var string
+     */
+    private $_locale = 'en-US';
+    
+    /**
+     * The csrf token for next request
+     * @var unknown
+     */
+    private $_csrf_token = '';
+    
+    /**
+     * Responder for localize the languages
+     * @var mixed
+     */
+    private $_localizer = false;
     
     /**
      * Construct function
@@ -75,6 +99,9 @@ class Response{
     public function __get($name){
         if ($name=='charset'){
             return $this->_charset;
+        }
+        if ($name=='csrf_token'){
+        	return $this->_csrf_token;
         }
         if (isset($this->_data[$name])){
             return $this->_data[$name];
@@ -108,6 +135,31 @@ class Response{
     			$this->setHeader('X-' . App::$codename . '-Debug:' . $key . '|' . $plainValue);
     		}
     	}
+    }
+    
+    /**
+     * Create and return current response's csrf protect token
+     * @return string csrf token
+     */
+    public function getCsrfToken(){
+    	if (App::$sessionId && $this->_csrf_token==''){
+    		$recreate = true;
+    		if (isset($_SESSION['csrf_token'])){
+    			$csrf_token = $_SESSION['csrf_token'];
+    			if (substr($csrf_token, 0, strpos($csrf_token, '|')) == App::$sessionId){
+    				$recreate = false;
+    			}
+    		}
+    		 
+    		if ($recreate){
+    			$csrf_token = App::$sessionId . '|' . substr(hash('sha256', App::$sessionId . Util::randomString()), 0, 32);
+    			$_SESSION['csrf_token'] = $csrf_token;
+    		}
+    		 
+    		$this->_csrf_token = base64_encode($csrf_token);
+    	}
+    	
+    	return $this->_csrf_token;
     }
     
     /**
@@ -149,6 +201,24 @@ class Response{
      */
     public function getAction(){
     	return $this->_action;
+    }
+    
+    /**
+     * Set current locale
+     *
+     * @param string $locale
+     */
+    public function setLocale($locale){
+    	$this->_locale = $locale;
+    }
+    
+    /**
+     * Set current localizer
+     *
+     * @param Lark\Localizer $localizer
+     */
+    public function setLocalizer(Localizer $localizer){
+    	$this->_localizer = $localizer;
     }
     
     /**
@@ -260,7 +330,24 @@ class Response{
     }
     
     /**
-     * Assign multi data to response the samve time
+     * Assign global variables
+     */
+    public function assignGlobal($name, $value){
+    	$this->_global[$name] = $value;
+    }
+    
+    /**
+     * Assign data to response
+     * 
+     * @param string $name
+     * @param mixed $value
+     */
+    public function assign($name, $value){
+    	$this->_data[$name] = $value;
+    }
+    
+    /**
+     * Assign multi data to response the same time
      * 
      * @param array $data
      */
@@ -380,6 +467,16 @@ class Response{
     	$template = new Template($template);
     	$template->setController($this->_controller);
     	$template->setAction($this->_action);
+    	$template->setLocale($this->_locale);
+    	$template->setErrors($this->_errors);
+    
+        if ($this->_localizer){
+        	$template->setLocalizer($this->_localizer);
+        }
+        
+        $this->assignGlobal('csrf_token', $this->getCsrfToken());
+        
+        $template->assignGlobal($this->_global);
     	$template->batchAssign($this->_data);
     	return $template->render();
     }
@@ -394,6 +491,16 @@ class Response{
         $template = new Template($template);
         $template->setController($this->_controller);
         $template->setAction($this->_action);
+        $template->setLocale($this->_locale);
+        $template->setErrors($this->_errors);
+        
+        if ($this->_localizer){
+        	$template->setLocalizer($this->_localizer);
+        }
+        
+        $this->assignGlobal('csrf_token', $this->getCsrfToken());
+        
+        $template->assignGlobal($this->_global);
     	$template->batchAssign($this->_data);
     	$template->display();
     }

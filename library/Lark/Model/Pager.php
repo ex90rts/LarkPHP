@@ -3,6 +3,7 @@ namespace Lark\Model;
 
 use Lark\Model;
 use Lark\Template;
+use Lark\Util;
 
 class Pager{
 	/**
@@ -63,25 +64,30 @@ class Pager{
 	public function __construct(Model $model, $options=array()){
 		$this->model    = $model;
 		
-		$this->pk       = $options['pk']       ?: 'page';
-		$this->page     = (isset($_GET[$this->pk]) && is_numeric($_GET[$this->pk])) ? $_GET[$this->pk] : 1;
+		$this->pk       = isset($options['pk']) ? $options['pk'] : 'page';
+		$this->page     = (isset($_GET[$this->pk]) && is_numeric($_GET[$this->pk])) ? intval($_GET[$this->pk]) : 1;
 		
+		$query = '';
 		if (!empty($options['url'])){
 			list($url, $query) = explode("?", $options['url']);
 		}else{
-			list($url, $query) = explode("?", $_SERVER['REQUEST_URI']);
+			$uriparts = explode("?", $_SERVER['REQUEST_URI']);
+			$url = $uriparts[0];
+			if (isset($uriparts[1])){
+			    $query = $uriparts[1];
+			}
 		}
 		$this->url = $url;
 		parse_str($query, $this->query);
 		
-		$this->size     = $options['size']     ?: 15;
-		$this->near     = $options['near']     ?: 5;
+		$this->size     = isset($options['size']) ? $options['size'] : 15;
+		$this->near     = isset($options['near']) ? $options['near'] : 5;
 		$this->endpoint = isset($options['endpoint']) ? $options['endpoint'] : true;
-		$this->groupnum = $options['groupnum'] ?: 10;
-		$this->template = $options['template'] ?: 'default';
-		$this->style    = $options['style']    ?: self::STYLE_GROUP;
-		$this->classes  = $options['classes']  ?: 'ui pagination';
-		$this->onepage  = $options['onepage']  ?: 'hide';
+		$this->groupnum = isset($options['groupnum']) ? $options['groupnum'] : 10;
+		$this->template = isset($options['template']) ? $options['template'] : 'default';
+		$this->style    = isset($options['style']) ? $options['style'] : self::STYLE_GROUP;
+		$this->classes  = isset($options['classes']) ? $options['classes'] : 'ui pagination';
+		$this->onepage  = isset($options['onepage']) ? $options['onepage'] : 'hide';
 		
 		if(!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest') {
 			$this->ajax = true;
@@ -170,7 +176,7 @@ class Pager{
 	
 	public function makeLink($page){
 		$this->query[$this->pk] = $page;
-		return $this->url . "?" . http_build_query($this->query);
+		return Util::inputFilter($this->url) . "?" . http_build_query($this->query);
 	}
 	
 	public function getRecords(){
@@ -184,7 +190,7 @@ class Pager{
 		
 		$count = $this->model->countData($this->countParams);
 		if ($count){
-			$this->count = $count;
+			$this->count = intval($count);
 		}
 		
 		$maxpage = ceil($this->count / $this->size);
@@ -236,11 +242,14 @@ class Pager{
 							$disabled  = $this->groupidx==1 ? "disabled" : "";
 							$firstLink = $this->groupidx==1 ? "#" : $this->makeLink(1);
 							$prevLink  = $this->groupidx==1 ? "#" : $this->makeLink(($this->groupidx-2)*$this->groupnum + 1);
-							$result   .= "<li class=\"nav first {$disabled}\"><a href=\"{$firstLink}\" class=\"link\"><div class=\"arrow left\"></div></a></li>\r\n";
-							$result   .= "<li class=\"nav prev {$disabled}\"><a href=\"{$prevLink}\" class=\"link\"><div class=\"arrow left\"></div></a></li>\r\n";
+							$result   .= "<li class=\"nav first margin-right-10 {$disabled}\"><a href=\"{$firstLink}\" class=\"link\"><i class=\"icon grey double-arrow left size-16x13\"></i></a></li>\r\n";
+							$result   .= "<li class=\"nav prev {$disabled}\"><a href=\"{$prevLink}\" class=\"link\"><i class=\"icon grey arrow left size-9x13\"></i></a></li>\r\n";
 						}
 						$firstPage = ($this->groupidx - 1) * $this->groupnum + 1;
 						$lastPage  = $this->groupidx * $this->groupnum;
+						if ($lastPage > $this->maxpage){
+							$lastPage = $this->maxpage;
+						}
 						for ($page=$firstPage; $page<=$lastPage; $page++){
 							$selected = $page==$this->page ? "selected" : "";
 							$pageLink = $page==$this->page ? "#" : $this->makeLink($page);
@@ -250,15 +259,15 @@ class Pager{
 							$disabled  = $this->groupidx==$this->groupmax ? "disabled" : "";
 							$nextLink  = $this->groupidx==$this->groupmax ? "#" : $this->makeLink($this->groupidx * $this->groupnum + 1);
 							$lastLink  = $this->groupidx==$this->groupmax ? "#" : $this->makeLink(($this->groupmax-1)*$this->groupnum + 1);
-							$result   .= "<li class=\"nav next {$disabled}\"><a href=\"{$nextLink}\" class=\"link\"><div class=\"arrow right\"></div></a></li>\r\n";
-							$result   .= "<li class=\"nav last {$disabled}\"><a href=\"{$lastLink}\" class=\"link\"><div class=\"arrow right\"></div></a></li>\r\n";
+							$result   .= "<li class=\"nav next {$disabled}\"><a href=\"{$nextLink}\" class=\"link\"><i class=\"icon grey arrow right size-9x13\"></i></a></li>\r\n";
+							$result   .= "<li class=\"nav last margin-left-10 {$disabled}\"><a href=\"{$lastLink}\" class=\"link\"><i class=\"icon grey double-arrow right size-16x13\"></i></a></li>\r\n";
 						}
 					}else{
 						$disabled  = $this->page==1 ? "disabled" : "";
 						$firstLink = $this->page==1 ? "#" : $this->makeLink(1);
 						$prevLink  = $this->page==1 ? "#" : $this->makeLink($this->page-1);
-						$result   .= "<li class=\"nav first {$disabled}\"><a href=\"{$firstLink}\" class=\"link\"><div class=\"arrow left\"></div></a></li>\r\n";
-						$result   .= "<li class=\"nav prev {$disabled}\"><a href=\"{$prevLink}\" class=\"link\"><div class=\"arrow left\"></div></a></li>\r\n";
+						$result   .= "<li class=\"nav first margin-right-10 {$disabled}\"><a href=\"{$firstLink}\" class=\"link\"><i class=\"icon grey double-arrow left size-16x13\"></i></a></li>\r\n";
+						$result   .= "<li class=\"nav prev {$disabled}\"><a href=\"{$prevLink}\" class=\"link\"><i class=\"icon grey arrow left size-9x13\"></i></a></li>\r\n";
 						
 						$firstPage = $this->page - $this->near;
 						if ($firstPage < 1){
@@ -277,8 +286,8 @@ class Pager{
 						$disabled  = $this->page==$this->maxpage ? "disabled" : "";
 						$nextLink  = $this->page==$this->maxpage ? "#" : $this->makeLink($this->page + 1);
 						$lastLink  = $this->page==$this->maxpage ? "#" : $this->makeLink($this->maxpage);
-						$result   .= "<li class=\"nav next {$disabled}\"><a href=\"{$nextLink}\" class=\"link\"><div class=\"arrow right\"></div></a></li>\r\n";
-						$result   .= "<li class=\"nav last {$disabled}\"><a href=\"{$lastLink}\" class=\"link\"><div class=\"arrow right\"></div></a></li>\r\n";
+						$result   .= "<li class=\"nav next {$disabled}\"><a href=\"{$nextLink}\" class=\"link\"><i class=\"icon grey arrow right size-9x13\"></i></a></li>\r\n";
+						$result   .= "<li class=\"nav last margin-left-10 {$disabled}\"><a href=\"{$lastLink}\" class=\"link\"><i class=\"icon grey double-arrow right size-16x13\"></i></a></li>\r\n";
 					}
 					$result .= "</ul>";
 				}

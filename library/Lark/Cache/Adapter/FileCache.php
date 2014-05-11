@@ -224,4 +224,11 @@ class FileCache implements AdapterInterface {
 
 		return $items;
 	}
+	
+	/**
+	 * Get service status info
+	 */
+	public function getStatus(){
+		return array('info'=>'file cache status');
+	}
 }

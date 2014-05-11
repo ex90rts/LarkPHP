@@ -7,10 +7,11 @@ class Request{
 	 * HTTP method defination
 	 * 
 	 */
-	const METHOD_GET    = 'GET';
-	const METHOD_POST   = 'POST';
-    const METHOD_PUT    = 'PUT';
-    const METHOD_DELETE = 'DELETE';
+	const METHOD_GET     = 'GET';
+	const METHOD_POST    = 'POST';
+    const METHOD_PUT     = 'PUT';
+    const METHOD_DELETE  = 'DELETE';
+    const METHOD_OPTIONS = 'OPTIONS';
 	
     private $_get;
     
@@ -120,8 +121,11 @@ class Request{
      */
     public function get($name='', $default=''){
     	$value = $this->_get;
-    	if ($name!='' && isset($this->_get[$name])){
-    		$value = $this->_get[$name];
+    	if ($name!=''){
+    		$value = '';
+    		if (isset($this->_get[$name])){
+    			$value = $this->_get[$name];
+    		}
     	}
     	 
     	$value = Util::inputFilter($value);
@@ -141,16 +145,45 @@ class Request{
      */
     public function post($name='', $default=''){
     	$value = $this->_post;
-    	if ($name!='' && isset($this->_post[$name])){
-    		$value = $this->_post[$name];
+    	if ($name!=''){
+    		$value = '';
+    		if (isset($this->_post[$name])){
+    			$value = $this->_post[$name];
+    		}
     	}
     	 
     	$value = Util::inputFilter($value);
-    	if (!$value && $default){
+    	if ($value==='' && $default!==''){
     		$value = $default;
     	}
     	
     	return $value;
+    }
+    
+    /**
+     * Read $_GET or $_POST variable value after sanitized depend on current request method
+     * 
+     * @param string $name
+     * @param string $default Only support string like value
+     * @return mixed
+     */
+    public function fetch($name='', $default=''){
+    	if ($name==''){
+    		$get = $this->get();
+    		$post = $this->post();
+    		return array(
+    			'GET' => $get,
+    			'POST' => $post,
+    		);
+    	}
+    	
+    	if (isset($this->_get[$name])){
+    		return $this->get($name, $default);
+    	}elseif (isset($this->_post[$name])){
+    		return $this->post($name, $default);
+    	}
+    	
+    	return null;
     }
     
     /**
@@ -176,9 +209,9 @@ class Request{
      */
     public function getServer($key=null){
         if (is_string($key)){
-            return isset($_SERVER[$key]) ? $_SERVER[$key] : null;
+            return isset($_SERVER[$key]) ? Util::inputFilter($_SERVER[$key]) : null;
         }else{
-            return $_SERVER;
+            return Util::inputFilter($_SERVER);
         }
     }
     
@@ -204,7 +237,7 @@ class Request{
     public function getHeader($name){
     	 $headerName = "HTTP_{$name}";
     	 if (isset($_SERVER[$headerName])){
-    	 	return $_SERVER[$headerName];
+    	 	return Util::inputFilter($_SERVER[$headerName]);
     	 }else{
     	 	return false;
     	 }
@@ -217,10 +250,22 @@ class Request{
      */
     public function getIP(){
     	if (!$this->ip){
-    		$this->ip = $_SERVER['REMOTE_ADDR'];
+    		$this->ip = Util::inputFilter($_SERVER['REMOTE_ADDR']);
     	}
     	 
     	return $this->ip;
+    }
+    
+    /**
+     * Get referer URL
+     */
+    public function getReferer(){
+    	$referer = '/';
+    	if (isset($_SERVER['HTTP_REFERER'])){
+    		$referer = Util::inputFilter($_SERVER['HTTP_REFERER']);
+    	}
+    	
+    	return $referer;
     }
     
     /**
@@ -233,7 +278,7 @@ class Request{
         if (is_string($key)){
             return isset($_SESSION[$key]) ? $_SESSION[$key] : null;
         }else{
-            return $_SESSION;
+            return Util::inputFilter($_SESSION);
         }
     }
 }

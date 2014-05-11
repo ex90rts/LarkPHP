@@ -14,6 +14,13 @@ class Template{
 	private $_basePath = '';
 	
 	/**
+	 * Template global data holder
+	 * 
+	 * @var array
+	 */
+	private $_global = array();
+	
+	/**
 	 * Template data holder
 	 * 
 	 * @var array
@@ -43,6 +50,25 @@ class Template{
 	 * @var string
 	 */
 	private $_action;
+	
+	/**
+	 * Current visitor's language locale
+	 * @var string
+	 */
+	private $_locale = 'en-US';
+	
+	/**
+	 * Responder for localize the languages
+	 * @var mixed
+	 */
+	private $_localizer = false;
+	
+	/**
+	 * Errors
+	 * 
+	 * @var array
+	 */
+	private $_errors = array();
 	
 	/**
 	 * Constructor
@@ -101,6 +127,42 @@ class Template{
     }
     
     /**
+     * Set current locale
+     * 
+     * @param string $locale
+     */
+    public function setLocale($locale){
+    	$this->_locale = $locale;
+    }
+    
+    /**
+     * Set current localizer
+     * 
+     * @param Lark\Localizer $localizer
+     */
+    public function setLocalizer(Localizer $localizer){
+    	$this->_localizer = $localizer;
+    }
+    
+    /**
+     * Set output errors
+     * 
+     * @param array $errors
+     */
+    public function setErrors($errors){
+        $this->_errors = $errors;
+    }
+    
+    /**
+     * Get errors
+     * 
+     * @return array
+     */
+    public function getErrors(){
+        return $this->_errors;
+    }
+    
+    /**
      * Return current action name
      * @return string
      */
@@ -128,6 +190,87 @@ class Template{
 	}
 	
 	/**
+	 * Assign global template data
+	 * 
+	 * @param array $data
+	 */
+	public function assignGlobal($data){
+		$this->_global = array_merge($this->_global, $data);
+	}
+	
+	/**
+	 * Read global template data
+	 */
+	public function readGlobal($key){
+		if (isset($this->_global[$key])){
+			return $this->_global[$key];
+		}else{
+			return false;
+		}
+	}
+	
+	/**
+	 * Echo out localized language content
+	 * 
+	 * @param string $key language key
+	 */
+	public function localize($key, $replacement=array()){
+		if (!$this->_localizer){
+			echo "{{no localizer}}";
+			return;
+		}
+		
+		$content = $this->_localizer->say($key, $this->_locale, $replacement);
+		if ($content){
+			echo $content;
+		}else{
+			echo $key;
+		}
+	}
+	
+	/**
+	 * Return localized language content
+	 * 
+	 * @param string $key language key
+	 */
+	public function getLocalize($key, $replacement=array()){
+		if (!$this->_localizer){
+			return "{{no localizer}}";
+		}
+		
+		$content = $this->_localizer->say($key, $this->_locale, $replacement);
+		if ($content){
+			return $content;
+		}else{
+			return $key;
+		}
+	}
+	
+	/**
+	 * Echo out localized language content via input
+	 * @param unknown $content
+	 */
+	public function locale($content){
+		if (isset($content[$this->_locale])){
+			echo $content[$this->_locale];
+		}else{
+			echo "{{$this->_locale}}";
+		}
+	}
+
+	/**
+	 * Return localized language content via input
+	 * @param unknown $content
+	 */
+	public function getLocale($content){
+		if (isset($content[$this->_locale])){
+			return $content[$this->_locale];
+		}else{
+			return "{{$this->_locale}}";
+		}
+	}
+	
+	/**
 	 * Format and outout timestamp
 	 * 
 	 * @param mixed $time
@@ -138,7 +281,29 @@ class Template{
 			$time = strtotime($time);
 		}
 		
-		echo date($format, $time);
+		if ($time < 86400){
+		    echo '';
+		}else{
+		  echo date($format, $time);
+		}
+	}
+
+	/**
+	 * Format and outout timestamp
+	 * 
+	 * @param mixed $time
+	 * @param string $format
+	 */
+	public function getDate($time, $format = 'Y-m-d H:i:s'){
+		if (!is_numeric($time)){
+			$time = strtotime($time);
+		}
+		
+		if ($time < 86400){
+		  return '';
+		}else{
+		  return date($format, $time);
+		}
 	}
 	
 	/**
@@ -189,9 +354,17 @@ class Template{
 	}
 	
 	/**
+	 * Output pure html code
+	 */
+	public function echoHtml($html){
+		echo htmlspecialchars_decode($html);
+	}
+	
+	/**
 	 * Shorten number
 	 * @param number $num
 	 */
+	/*jjjjjjjjjjjjjjjj
 	public function numShorten($num, $step='k'){
 		if ($step=='k'){
 			$stepNumber = 1000;
@@ -203,6 +376,7 @@ class Template{
 		if ($num>=$stepNumber){
 			if ($num % $stepNumber){
 				$k = $num/$stepNumber;
+				$k = round($num/$stepNumber, 1);
 			}else{
 				$k = round($num/$stepNumber, 1);
 			}
@@ -210,6 +384,72 @@ class Template{
 		}else{
 			echo $num;
 		}
+	}
+    */
+
+    /**
+	 * Shorten number
+	 * @param number $num
+	 * modified by lawyu
+	 */
+	public function numShorten($num, $step='k'){
+        $num = intval($num);
+        if ($num > 9999) $step = 'w';
+        if ($step=='k'){
+            $stepNumber = 1000;
+        }else if($step=='w'){
+            $stepNumber = 10000;
+        }
+
+        if ($num>=$stepNumber){
+            if ($num % $stepNumber){
+                $k = $num/$stepNumber;
+                $k = round($num/$stepNumber, 1);
+            }else{
+                //$k = round($num/$stepNumber, 1);
+            }
+            echo $k . $step;
+        }else{
+            echo $num;
+        }
+    }
+
+	/**
+	 * Output rounded number
+	 * @param number $num
+	 * @param number $dime
+	 */
+	public function numRound($num, $precision=1, $limit=false){
+		$round = round($num, $precision);
+		if ($limit && $round>$limit){
+			$round = $limit;
+		}
+		
+		echo $round;
+	}
+	
+	/**
+	 * Return rounded number
+	 * @param number $num
+	 * @param number $dime
+	 */
+	public function getNumRound($num, $precision=1, $limit=false){
+		$round = round($num, $precision);
+		if ($limit && $round>$limit){
+			$round = $limit;
+		}
+		
+		return $round;
+	}
+	
+	/**
+	 * Truncate and output string
+	 * 
+	 * @param unknown $text
+	 * @param unknown $length
+	 */
+	public function truncate($text, $len, $pad='...'){
+	    echo Util::mbcutString($text, $len, $pad);
 	}
 	
 	/**
@@ -237,10 +477,36 @@ class Template{
 	}
 	
 	/**
+	 * Output sort filed, styled with Glyphicons ICON
+	 */
+	public function sortField($field, $sort, $curOrder, $query, $label, $showIcon=true){
+		$nextOrder = 'DESC';
+		$icon = 'glyphicon glyphicon-sort';
+		if ($field==$sort){
+			if ($curOrder == 'ASC'){
+				$nextOrder = 'DESC';
+				$icon = 'glyphicon glyphicon-sort-by-attributes';
+			}elseif($curOrder == 'DESC'){
+				$nextOrder = 'ASC';
+				$icon = 'glyphicon glyphicon-sort-by-attributes-alt';
+			}
+		}
+		$href = '?'.http_build_query($query)."&sort={$field}&order={$nextOrder}";
+		if ($showIcon){
+			echo "<a href=\"{$href}\">{$label}<i class=\"{$icon} small\"></i></a>";
+		}else{
+			echo "<a href=\"{$href}\">{$label}</a>";
+		}
+	}
+	
+	/**
 	 * Echo out asset host
 	 */
-	public function loadAsset($file, $version=''){
-		$fileUrl = $this->_staticHost . $file;
+	public function loadAsset($fileUrl, $version=''){
+		if (!preg_match('/^https?:\/\//i', $fileUrl)){
+			$fileUrl = $this->_staticHost . $fileUrl;
+		}
+		
 		if ($version){
 			$fileUrl = $fileUrl . '?v=' . $version;
 		}
@@ -253,8 +519,11 @@ class Template{
 	 * @param string $file
 	 * @param string $version
 	 */
-	public function loadJs($file, $version=''){
-		$fileUrl = $this->_staticHost . $file;
+	public function loadJs($fileUrl, $version=''){
+		if (!preg_match('/^https?:\/\//i', $fileUrl)){
+			$fileUrl = $this->_staticHost . $fileUrl;
+		}
+		
 		if ($version){
 			$fileUrl = $fileUrl . '?v=' . $version;
 		}
@@ -267,8 +536,11 @@ class Template{
 	 * @param string $file
 	 * @param string $version
 	 */
-	public function loadCss($file, $version=''){
-		$fileUrl = $this->_staticHost . $file;
+	public function loadCss($fileUrl, $version=''){
+		if (!preg_match('/^https?:\/\//i', $fileUrl)){
+			$fileUrl = $this->_staticHost . $fileUrl;
+		}
+		
 		if ($version){
 			$fileUrl = $fileUrl . '?v=' . $version;
 		}

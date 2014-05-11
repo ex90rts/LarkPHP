@@ -125,4 +125,11 @@ class Memcached implements AdapterInterface{
 	public function getMulti ($keys){
 	    return $this->_cache->getMulti($keys);
 	}
+	
+	/**
+	 * Get service status info
+	 */
+	public function getStatus(){
+		return $this->_cache->getStats();
+	}
 }

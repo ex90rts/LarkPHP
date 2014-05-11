@@ -5,108 +5,175 @@ use Lark\Mysql\Query;
 use Lark\Model\DataList;
 use Lark\Exception\ModelHashKeyException;
 
+/**
+ * 数据模型基类
+ * 
+ * 数据模型基类，封装MySQL数据记录到PHP对象，并提供数据验证和读取的便利方法，提供高速缓存的
+ * 支持。框架中任何数据的读取都应该通过数据模型来完成，以免对数据结构和安全性造成破坏。模型基类
+ * 默认以primary key为键建立了redis/memcache缓存，请尽量在业务中使用默认的构造方法传入主键
+ * ID来读取数据，这样能够更加高效地使用到缓存而不是直接读取数据库。在其它基类未提供的方式但是
+ * 读取非常频繁的情况下，可以在具体的模型实现中自己维护缓存数据，基类暴露了$_cache给子类调用。
+ * 
+ * 基类通过以下方法实现了模型的基本构造和操作:
+ * - getTable 基类必须实现此方法，用于返回模型对应的MySQL数据库表名（不包括分表索引部分）
+ * - getFields 基类必须实现此方法，用于返回模型对应的MySQL数据表的字段和字段格式，以及字段值的校验规则
+ * - hashField 如果模型对应的MySQL数据表进行了分表处理，则必须传入此字段，以标明通过哪个字段值进行hash分表
+ * - hasField 供检查模型是否包含某个字段
+ * - errors 返回模型数据校验过程中产生的逻辑错误，为Error对象数组
+ * - validate 结合getFields返回的校验规则对数据进行校验
+ * - save 持久化数据到数据库，新数据则调用insert，老数据则调用update
+ * - insert 插入新数据到数据库
+ * - update 更新数据到数据库
+ * - delete 删除数据库中的记录
+ * 
+ * 基类通过以下方法扩展了模型操作数据与数据库数据之间在格式上的透明化：
+ * - beforeSave 保存之前，对于字段类型是序列化数组的，判断有没有序列化，如果没有先序列化
+ * - afterSave 保存之后，将序列化过的字段反序列化，供脚本中使用
+ * - afterLoad 从数据库中读取出来后，反序列化被序列化保存的字段
+ * - saveTemp/readTemp 在beforeSave和afterSave过程中作为脚本缓存使用，避免不必要的序列化操作
+ * 
+ * 基类提供了以下方法作为数据读取的便利方法
+ * - findOne*** 查找一条满足条件的记录便利方法，查找到后回默认将数据load到当前对象中
+ * - findAll*** 查找多条满足条件的记录便利方法，查找到后回默认返回一个Mysql\Datalist对象供遍历使用
+ * - execQuery 直接执行一个Mysql\Query，这个方法最大限度提供了编写sql的自由性，在find***方法不能满足需要时使用
+ * 
+ * @property Mysql $_mysql Mysql对象实例
+ * @property string $_table 数据表名（不包括分表索引部分）
+ * @property string $_hashkey 供分表hash的字段值
+ * @property array $_fields 字段配置
+ * @property array $_data 实际保存当前模型数据的数组，模型属性值（字段值）均通过__get的魔术方法从$_data中读取
+ * @property array $_temp 供saveTemp/readTemp方法使用的脚本缓存数组
+ * @property boolean $_loaded 数据是否载入了当前模型对象
+ * @property array $_changes 数据载入模型对象后发生修改的属性键值，为save/update操作准备数据
+ * @property array $_errors 数据校验产生的Error错误数组
+ * @property Cache $_cache Cache对象实例
+ * @property string $id 当前数据的主键值，没有load的时候为0，load之后为具体数据主键字段值
+ * @author samoay
+ *
+ */
 abstract class Model{
 	
 	/**
-	 * Model field data type
+	 * @var string 字段类型-整数
 	 */
 	const TYPE_INT = 'INT';
+	
+	/**
+	 * @var string 字段类型-数字
+	 */
 	const TYPE_NUMBER = 'NUMBER';
+	
+	/**
+	 * @var string 字段类型-字符串
+	 */
 	const TYPE_STRING = 'STRING';
+	
+	/**
+	 * @var string 字段类型-布尔型
+	 */
 	const TYPE_BOOL = 'BOOL';
+	
+	/**
+	 * @var string 字段类型-日期时间型
+	 */
 	const TYPE_DATETIME = 'DATETIME';
+	
+	/**
+	 * @var string 字段类型-数组序列化
+	 */
 	const TYPE_SERIALIZED = 'SERIALIZED';
+	
+	/**
+	 * @var string 字段类型-JSON
+	 */
 	const TYPE_JSON = 'JSON';
 	
-	/*MySQL primary key name*/
+	/**
+	 * @var string 数据库中主键字段的字段名
+	 */
 	const PRIMARY_KEY = 'id';
 	
-	/*Primary cache expire time*/
+	/**
+	 * @var string 高速缓存的时间（供设定缓存时使用便利）-非常短 5秒
+	 */
 	const CACHE_SECOND  = 5;
+	
+	/**
+	 * @var string 高速缓存的时间（供设定缓存时使用便利）-短 1小时
+	 */
 	const CACHE_SHORT   = 3600;
+	
+	/**
+	 * @var string 高速缓存的时间（供设定缓存时使用便利）-一般 24小时
+	 */
 	const CACHE_NORMAL  = 86400;
+	
+	/**
+	 * @var string 高速缓存的时间（供设定缓存时使用便利）-长 30天
+	 */
 	const CACHE_LONG    = 2592000;
 	
 	/**
-	 * Holding the mysql instance
-	 * 
-	 * @var Lark\Mysql
+	 * @var Mysql Mysql对象实例
 	 */
-	private $_mysql;
+	protected $_mysql;
 	
 	/**
-	 * table name of this model
-	 * 
-	 * @var string
+	 * @var string 数据表名（不包括分表索引部分）
 	 */
-	private $_table;
+	protected $_table;
 	
 	/**
-	 * Hash key for multi tables
-	 * @var number
+	 * @var number 供分表hash的字段值
 	 */
-	private $_hashkey = false;
+	protected $_hashkey = false;
 	
 	/**
-	 * user defined fields and validation rules of this model
-	 * 
-	 * @var array
+	 * @var array 字段配置
 	 */
-	private $_fields;
+	protected $_fields;
 	
 	/**
-	 * user defined field data of this model
-	 * 
-	 * @var array
+	 * @var array 实际保存当前模型数据的数组，模型属性值（字段值）均通过__get的魔术方法从$_data中读取
 	 */
 	private $_data = array();
 	
 	/**
-	 * temp data for holding data before and after saving events
-	 *
-	 * @var array
+	 * @var array 供saveTemp/readTemp方法使用的脚本缓存数组
 	 */
 	private $_temp = array();
 	
 	/**
-	 * stat of the data of the model instance was loaded or not
-	 * 
-	 * @var boolean
+	 * @var boolean 数据是否载入了当前模型对象
 	 */
 	private $_loaded = false;
 	
 	/**
-	 * Record data changes after loaded
-	 * 
-	 * @var array
+	 * @var array 数据载入模型对象后发生修改的属性键值，为save/update操作准备数据
 	 */
-	private $_changes = array();
+	protected $_changes = array();
 	
 	/**
-	 * validation errors holder after validate method invoked
-	 * 
-	 * @var array
+	 * @var array 数据校验产生的Error错误数组
 	 */
-	private $_errors = array();
+	protected $_errors = array();
 	
 	/**
-	 * Lark\Cache instance holder
-	 *
-	 * @var Lark\Cache
+	 * @var Cache Cache对象实例
 	 */
 	protected $_cache = null;
 	
 	/**
-	 * primary key holder
-	 * 
-	 * @var int
+	 * @var int 当前数据的主键值，没有load的时候为0，load之后为具体数据主键字段值
 	 */
 	public $id = 0;
 	
 	/**
-	 * Construct method, will try to load data if $pk param was given
+	 * 构造方法，从App单例池中取出Mysql和Cache对象；传入主键值和hash字段值；从子类读取表明
+	 * 和字段配置；校验hash字段值；如果传入的主键值大于0则自动从数据库载入该条目数据
 	 * 
-	 * @param string $pk
+	 * @param number $pk 主键值，默认值0
+	 * @param number $hashkey hash字段值，可选，但是当表分表后为必选
 	 */
 	public function __construct($pk=0, $hashkey=false){
 		$this->_mysql   = App::getInstance('Mysql');
@@ -129,10 +196,10 @@ abstract class Model{
 	}
 	
 	/**
-	 * Set field data to this model, only setted fields allowed
+	 * 设定模型属性值（即字段值）的魔术方法
 	 * 
-	 * @param string $name
-	 * @param mixed $value
+	 * @param string $name 字段名
+	 * @param mixed $value 字段值
 	 */
 	public function __set($name, $value){
 		if (isset($this->_fields[$name])){
@@ -145,9 +212,9 @@ abstract class Model{
 	}
 	
 	/**
-	 * Read field data from this model
+	 * 获取模型属性值（即字段值）的魔术方法
 	 * 
-	 * @param string $name
+	 * @param string $name 字段名
 	 */
 	public function __get($name){
 		if (isset($this->_data[$name])){
@@ -158,53 +225,99 @@ abstract class Model{
 	}
 	
 	/**
-	 * Use print_r to ouput current model data
+	 * 将模型数据作为字符串输出的魔术方法，调试使用
 	 * 
-	 * @return mixed
+	 * @return string
 	 */
 	public function __toString(){
 		return "Model:" . get_called_class() ."({$this->id})\r\n". print_r($this->_data, true);
 	}
 	
 	/**
-	 * Return this model's table name, the default value is current model class name
+	 * 供子类实现，返回数据表名（不含分表索引值），比如表User被分为10个表，getTable依然
+	 * 只返回User，而不是User0/User9，分表索引值将在Query时通过hashkey自动加上
+	 * 
+	 * @access protected
+	 * @return string 数据表名
 	 */
 	abstract protected function getTable();
 	
 	/**
-	 * The fields config for this model, the default data type is TYPE_STRING,
-	 * the default required value is true, the default name the field name with first
-	 * letter in upper case. All defination with default value could be omited
+	 * 供子类实现，返回字段配置数组，格式如下：
+	 * 
+	 * array(
+	 *     'field' => arrray(
+	 *         'name' => '字段名描述',
+	 *         'type' => '字段类型, 必选为TYPE_*常量之一，默认TYPE_STRING',
+	 *         'required' => '是否必选，默认true',
+	 *         'default' => '默认值',
+	 *         'minval' => '最小值，必须为数字',
+	 *         'maxval' => '最大值，必须为数字',
+	 *         'minlen' => '最短值，必须为数字',
+	 *         'maxlen' => '最长值，必须为数字',
+	 *         'filter' => '用于filter_var方法的过滤器',
+	 *         'enum' => '枚举值，字段值只有在枚举的一种才合法',
+	 *         'regex' => '正则表达式验证',
+	 *     ),
+	 * )
+	 * 上述field必须与数据库的字段值一一对应，name为必选，其它均可选。
+	 * 
+	 * @access protected
+	 * @return array 字段配置数组
 	 */
 	abstract protected function getFields();
 	
 	/**
-	 * Return table hash field
-	 * @return NULL\string
+	 * 返回分表的hash字段名
+	 * 
+	 * @access protected
+	 * @return NULL\string hash字段名
 	 */
 	protected function hashField(){
 		return null;
 	}
 	
 	/**
-	 * Any events need to perform before save to database, only will be invoked if
-	 * you are using Model:save() method to save current model data
+	 * 在保存数据到数据库之前的前置操作，目前主要用来处理序列化数据类型，使之在控制层使用更加透明
+	 * 
+	 * @access protected
 	 */
 	protected function beforeSave(){}
 	
 	/**
-	 * Any events need to perform after save to database, only will be invoked if
-	 * you are using Model:save() method to save current model data
+	 * 在保存数据到数据库之后的后置操作，目前主要用来处理序列化数据类型，使之在控制层使用更加透明
+	 * 
+	 * @access protected
 	 */
 	protected function afterSave(){}
 	
 	/**
-	 * Any events need to perform after load data to model instance
+	 * 在数据加载到模型对象之后的操作，目前主要用来处理序列化数据类型，使之在控制层使用更加透明
+	 * 
+	 * @access protected
 	 */
 	protected function afterLoad(){}
 	
 	/**
-	 * Return cache key, random prefixed to avoid conflict with user named keys
+	 * 专门给计数类型字段提供的更新方法，即 filed=filed+n 这样的更新以在并发情况下提高数据准确性。
+	 * 注意：这个操作只有在调用save()方法后才会将数据写入数据库
+	 * 
+	 * @access public
+	 * @param string $field 字段名
+	 * @param string $value 更新数据，如  +1, -1, +10等
+	 */
+	public function tamperChanges($field, $value){
+		if (isset($this->_fields[$field])){
+			$this->_changes[$field] = $value;
+		}
+	}
+	
+	/**
+	 * 返回Model层默认主键cache的key
+	 * 
+	 * @access private
+	 * @param int $id 主键字段值
+	 * @return string/false 主键值有效返回字符串key，否则返回false
 	 */
 	private function getCacheKey($id=0){
 		if ($this->_cache && ($id>0 || $this->id>0)){
@@ -216,7 +329,11 @@ abstract class Model{
 	}
 	
 	/**
-	 * Save current data to cache
+	 * 保存Model层默认主键cache的值
+	 * 
+	 * @access private
+	 * @param int $id 主键字段值
+	 * @return boolean cache设定结果
 	 */
 	private function saveCache($id=0){
 		$key = $this->getCacheKey($id);
@@ -228,7 +345,11 @@ abstract class Model{
 	}
 	
 	/**
-	 * Read current data from cache
+	 * 读取Model层默认主键cache的值
+	 * 
+	 * @access private
+	 * @param int $id 主键字段值
+	 * @return boolean cache删除结果
 	 */
 	private function readCache($id=0){
 		$key = $this->getCacheKey($id);
@@ -239,6 +360,12 @@ abstract class Model{
 		return false;
 	}
 	
+	/**
+	 * 删除Model层默认主键cache的值
+	 * 
+	 * @param number $id 主键字段值
+	 * @return boolean
+	 */
 	private function deleteCache($id=0){
 		$key = $this->getCacheKey($id=0);
 		if ($key){
@@ -246,6 +373,25 @@ abstract class Model{
 		}
 		
 		return false;
+	}
+	
+	/**
+	 * 返回当前model加载数据后被修改的属性
+	 * 
+	 * @access public
+	 * @param string $key 字段名，可选，不传入则返回所有被修改的字段
+	 * @return mixed
+	 */
+	public function readChanges($key=''){
+		if ($key==''){
+			return $this->_changes;
+		}
+		
+		if (isset($this->_changes[$key])){
+			return $this->_changes[$key];
+		}
+		
+		return null;
 	}
 	
 	/**
@@ -289,6 +435,16 @@ abstract class Model{
 		
 		$this->_changes = array();
 		$this->_loaded = true;
+	}
+	
+	/**
+	 * Unload all loaded data
+	 */
+	public function unloadData(){
+		$this->id = 0;
+		$this->_data = array();
+		$this->_changes = array();
+		$this->_loaded = false;
 	}
 	
 	/**
@@ -363,6 +519,15 @@ abstract class Model{
     	}
     	
     	return false;
+    }
+    
+    /**
+     * Execute a query and return result without change current model
+     * @param Query $query
+     */
+    public function execQuery(Query $query){
+        $query->table($this->_table)->hash($this->_hashkey);
+        return $this->_mysql->exec($query);
     }
     
     /**
@@ -625,8 +790,12 @@ abstract class Model{
     	
     	$data = $this->findAllFullaware($params, $arr);
     	if ($data){
-    		$this->loadData(current($data));
-    		return $this;
+    	    if ($arr){
+    	        return current($data);
+    	    }else{
+    		    $this->loadData(current($data));
+    		    return $this;
+    	    }
     	}
     	 
     	return false;
@@ -671,7 +840,9 @@ abstract class Model{
     	if ($data){
     		$this->loadData(current($data));
     		return $this;
-    	}
+    	} 
+    	
+    	return false;
     }
     
     /**
@@ -693,7 +864,9 @@ abstract class Model{
     	if ($data){
     		$this->loadData(current($data));
     		return $this;
-    	}
+    	} 
+    	
+    	return false;
     }
     
     /**
@@ -714,6 +887,16 @@ abstract class Model{
     	
     }
 
+    /**
+     * Check if the filed is valid in this model
+     * 
+     * @param string $field
+     * @param boolean
+     */
+    public function hasField($field){
+    	return isset($this->_fields[$field]);
+    }
+    
     private function _validate($table, $field, $rule, $value=null){
     	$valid = true;
     	$error = null;
@@ -727,7 +910,7 @@ abstract class Model{
     			break;
     		}
     		 
-    		if ($value==null && isset($this->_data[$field])){
+    		if ($value===null && isset($this->_data[$field])){
     			$value = $this->_data[$field];
     		}
     		
@@ -744,7 +927,7 @@ abstract class Model{
     			$error = new Error(Error::LEVEL_MODEL, Error::ERR_EMPTY, "{$table}.{$field}");
     			break;
     		}
-    	
+    	    
     		//filed not required and don't have default value, and have no value no need to valid
     		if (!$required && empty($value)){
     			break;
@@ -786,7 +969,7 @@ abstract class Model{
     				break;
     		}
     		if (!$valid) break;
-    		 
+    		
     		//additional rules check
     		if (isset($rule['minval']) && $value > $rule['minval']){
     			$valid = false;
@@ -802,12 +985,12 @@ abstract class Model{
     			$len = mb_strlen($value, 'UTF-8');
     			if (isset($rule['minlen']) && $len < $rule['minlen']){
     				$valid = false;
-    				$error = new Error(Error::LEVEL_MODEL, Error::ERR_TOO_SHORT, "{$table}.{$field}", array($rule['minlen']));
+    				$error = new Error(Error::LEVEL_MODEL, Error::ERR_TOO_SHORT, "{$table}.{$field}", array($rule['minlen'], $len));
     				break;
     			}
     			if (isset($rule['maxlen']) && $len > $rule['maxlen']){
     				$valid = false;
-    				$error = new Error(Error::LEVEL_MODEL, Error::ERR_TOO_LONG, "{$table}.{$field}", array($rule['maxlen']));
+    				$error = new Error(Error::LEVEL_MODEL, Error::ERR_TOO_LONG, "{$table}.{$field}", array($rule['maxlen'], $len));
     				break;
     			}
     		}
@@ -891,7 +1074,7 @@ abstract class Model{
     	}
     	
     	if ($res){
-    		$this->saveCache();
+    		$this->deleteCache($this->id);
     	}
     	
     	$this->afterSave();
@@ -971,5 +1154,12 @@ abstract class Model{
 	 */
     public function errors(){
     	return $this->_errors;
+    }
+    
+    /**
+     * Get executed queries, for debug
+     */
+    public function getQueries(){
+        return $this->_mysql->getQueries();
     }
 }

@@ -43,7 +43,7 @@ class Redis implements AdapterInterface{
         
         $this->_cache = new \Redis();
         try{
-	        if ($config['persistent']){
+	        if (isset($config['persistent']) && $config['persistent']){
 	        	$conn = $this->_cache->pconnect($config['server'], $config['port'], $config['timeout']);
 	        }else{
 	        	$conn = $this->_cache->connect($config['server'], $config['port'], $config['timeout']);
@@ -56,7 +56,7 @@ class Redis implements AdapterInterface{
         	throw new \Exception("Redis server went away");
         }
         
-        if ($config['password']){
+        if (!empty($config['password'])){
         	$this->_cache->auth($config['password']);
         }
         
@@ -171,5 +171,12 @@ class Redis implements AdapterInterface{
 	    	return array_combine($keys, $values);
 	    }
 	    return false;
+	}
+	
+	/**
+	 * Get service status info
+	 */
+	public function getStatus(){
+		return $this->_cache->info();
 	}
 }

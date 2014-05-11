@@ -84,7 +84,7 @@ class Router{
         if (!empty($matchs['id'])){
         	$req->id = $matchs['id'];
         }
-        
+ 
         $res->setController($req->controller);
         $res->setAction($req->action);
         
@@ -94,7 +94,7 @@ class Router{
         array_push($classParts, ucfirst($req->controller));
 
         $class = implode('\\', $classParts);
-        
+
     	try{
     		$controller = new $class($req, $res);
     		$controller->executeAction();

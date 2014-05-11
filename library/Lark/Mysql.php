@@ -66,6 +66,12 @@ class Mysql{
     private $_holdQueries = 0;
     
     /**
+     * Cache all executed queries for modal debug
+     * @var array
+     */
+    private $_execedQueries = array();
+    
+    /**
      * Private construct function for singleton
      * Read mysql options from config mysql
      *
@@ -176,14 +182,12 @@ class Mysql{
                 $connInfo['tables'][$table] = $table;
 
                 $connKey = "{$serverInfo['host']}:{$serverInfo['port']}:{$serverInfo['name']}";
-                if (!empty($this->_lastConnKey) && $connKey!=$this->_lastConnKey){
-                    $exception = sprintf('not support cross server and database action for servers: %s, %s', $this->_lastConnKey, $connKey);
+                if (!$query->conn($connKey)){
+                    $exception = sprintf('not support cross server and database action for servers: %s, %s', $query->connKey, $connKey);
                     break;
                 }
 
                 $connInfo['connKey'] = $connKey;
-
-                $this->_lastConnKey = $connKey;
 
                 continue;
             }
@@ -227,14 +231,12 @@ class Mysql{
                 $connInfo['tables'][$table] = "{$table}{$tableId}";
 
                 $connKey = "{$serverInfo['host']}:{$serverInfo['port']}:{$connInfo['database']}";
-                if (!empty($this->_lastConnKey) && $connKey!=$this->_lastConnKey){
-                    $exception = sprintf('not support cross server and database action for servers: %s, %s', $this->_lastConnKey, $connKey);
+                if (!$query->conn($connKey)){
+                    $exception = sprintf('not support cross server and database action for servers: %s, %s', $query->connKey, $connKey);
                     break;
                 }
 
                 $connInfo['connKey'] = $connKey;
-
-                $this->_lastConnKey = $connKey;
             }else{
                 $exception = sprintf('table %s hash method not support', $table);
                 break;
@@ -258,15 +260,21 @@ class Mysql{
     public function exec(Query $query){
         $connInfo = $this->getConnInfo($query);
         $connKey = $connInfo['connKey'];
+        $oldConn = true;
         if (!isset($this->_connPool[$connKey])){
+        	$oldConn = false;
             $this->_connPool[$connKey] = new \mysqli($connInfo['server']['host'], $connInfo['server']['user'], $connInfo['server']['pass'], $connInfo['database'], $connInfo['server']['port']);
         }
 
         $mysqli = $this->_connPool[$connKey];
-        if (!$mysqli){
+        if ($oldConn && !$mysqli->ping()){
             throw new MysqlConnectFailedException(sprintf('falied try to connect %s, error %d:%s', $connKey, mysqli_connect_errno(), mysqli_connect_error()));
         }
 
+        if (isset($connInfo['server']['charset'])){
+        	$mysqli->set_charset($connInfo['server']['charset']);
+        }
+        
         $mysqli->autocommit(true);
         if ($this->_isTrans && $this->_holdQueries==0){
             $mysqli->autocommit(false);
@@ -284,7 +292,7 @@ class Mysql{
         foreach ($mapTables as $mapTable){
             $sql = str_replace("@{$mapTable}", $realTables[$mapTable], $sql);
         }
-
+        
         $result = $mysqli->query($sql);
         if ($query->action==Query::ACT_SELECT){
             if ($result instanceof \mysqli_result){
@@ -315,9 +323,11 @@ class Mysql{
         }
         
         App::addDbQueries($sql);
+        $this->_execedQueries[] = $sql;
         
-        if ($this->errno($mysqli) !== 0){
-        	throw new \Exception("Mysql error code: ". $this->errno($mysqli) ."; message: ".$this->error($mysqli) ."; SQL: ". $query);
+        $errno = $this->errno($mysqli);
+        if ($errno){
+        	throw new \Exception("Mysql error code: {$errno}; message: ".$this->error($mysqli) ."; SQL: ". $query);
         }
 
         return $result;

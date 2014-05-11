@@ -39,6 +39,12 @@ class Query{
      * @var string
      */
     private $_hashKey = '';
+    
+    /**
+     * Connection key used by this Query
+     * @var string
+     */
+    private $_connKey = null;
 
     /**
      * Current query verb
@@ -93,7 +99,7 @@ class Query{
      * @var int
      */
     private $_offset = null;
-
+    
     /**
      * Construct function
      *
@@ -126,6 +132,8 @@ class Query{
             return $this->_tables;
         }elseif($name=='hashKey'){
             return $this->_hashKey;
+        }elseif($name=='connKey'){
+            return $this->_connKey;
         }else{
             if (isset($this->_options[$name])){
                 return $this->_options[$name];
@@ -184,6 +192,20 @@ class Query{
     		$this->_hashKey = crc32($hashKey);
     	}
         return $this;
+    }
+    
+    /**
+     * Set connection key used by this Query, only can use one connection in the same query
+     * @param string $connKey
+     * @return boolean
+     */
+    public function conn($connKey){
+    	if ($this->_connKey && $this->_connKey!=$connKey){
+    		return false;
+    	}
+    	
+    	$this->_connKey = $connKey;
+    	return true;
     }
 
     /**
@@ -317,7 +339,11 @@ class Query{
      * @param string $str
      */
     private function escapeString($link, $str){
-    	return mysqli_real_escape_string($link, $str);
+    	if ($link){
+    		return mysqli_real_escape_string($link, $str);
+    	}else{
+    		return mysql_real_escape_string($str);
+    	}
     }
     
     /**
@@ -355,8 +381,14 @@ class Query{
     			continue;
     		}
     		
-    		if (is_numeric($value) || is_null($value)){
+    		if (preg_match('/^[\+\-]\d+$/', $value)){
+    			$op = substr($value, 0, 1);
+    			$ch = substr($value, 1);
+    			$fvs[] = "`{$field}`=`{$field}`{$op}{$ch}";
+    		}elseif (is_numeric($value)){
     			$fvs[] = "`{$field}`={$value}";
+    		}elseif (is_null($value)){
+    			$fvs[] = "`{$field}`=NULL";
     		}else{
     			$fvs[] = "`{$field}`='". $this->escapeString($link, $value) ."'";
     		}
@@ -385,6 +417,10 @@ class Query{
 	    		//Fields, AND
 	    		$parts = array();
 	    		foreach ($orItems as $key=>$value){
+	    		    if (strpos($key, '@')>0){
+	    		        $key = substr($key, 0, strpos($key, '@'));
+	    		    }
+	    		    
 		    		$op = '=';
 		    		if (is_array($value)){
 		    			$op = $value[0];

@@ -7,47 +7,59 @@ use Lark\Exception\PathNotFoundException;
 use Lark\Exception\WrongParamException;
 use Lark\Exception\WrongLogTypeException;
 
+/**
+ * 日志处理类
+ * 
+ * 用于记录文本日志
+ * 
+ * @property Logger $_instance 单例实例
+ * @property string $_logDir 日志保存目录
+ * @property array $_logContent 日志内容缓存
+ * @property array $_logTypes 日志类型
+ * @property string $_logDate 日期字符串缓存
+ * @author samoay
+ *
+ */
 class Logger{
 	/**
-	 * Flag for just log an empty line
-	 * @var string
+	 * @var string 空行内容
 	 */
 	const EMPTY_LINE = 'EMPTY_LINE';
 	
 	/**
-	 * Var for holding singleton instance of this class
-	 * @var object
+	 * @access private
+	 * @var Logger 单例模式实例
 	 */
     private static $_instance;
     
     /**
-     * Var for holding base dir of log files
-     * @var string
+     * @access private
+     * @var string 日志保存目录
      */
     private $_logDir;
     
     /**
-     * Var for holding temp log content before write to file
-     * @var Array
+     * @access private
+     * @var Array 日志内容缓存
      */
     private $_logContent;
     
     /**
-     * Var for holding available log types
-     * @var Array
+     * @access private
+     * @var Array 日志类型
      */
     private $_logTypes;
     
     /**
-     * Var for caching current yyyy-mm-dd date str in script
-     * @var string
+     * @access private
+     * @var string 日期字符串缓存，用于组成日志文件名
      */
     private $_logDate;
     
     /**
-     * Construct function
+     * 构造方法，读取配置并初始化日志基础信息
      * 
-     * @throws PathNotFoundException
+     * @throws PathNotFoundException 定义的日志保存目录不存在时抛出
      */
     private function __construct(){
         $logDir = App::getOption('logDir');
@@ -68,8 +80,10 @@ class Logger{
     }
     
     /**
-     * Method to return the singleton instance of Logger
-     * @return Object
+     * 单例模式返回Logger实例
+     * 
+     * @access public, static
+     * @return Logger
      */
     public static function getInstance(){
         if (!self::$_instance){
@@ -80,7 +94,7 @@ class Logger{
     }
     
     /**
-     * Block the clone method
+     * 单例模式禁止实例被clone
      * 
      * @throws CloneNotAllowedException
      */
@@ -89,19 +103,19 @@ class Logger{
     }
     
     /**
-     * Append partial log content to an exist log type
+     * 向已有的类型附加日志内容，这样在同一个进程中对同一种日志类型可以减少文件写入次数
      * 
-     * @param string $type
-     * @param string $content
+     * @param string $type 日志类型
+     * @param string $content 附加的日志内容
      */
     public function append($type, $content){
         if (!is_array($content)){
             $content = array('info'=>$content);
         }
         
-        $former = $this->_logContent[$type];
         $current = $content;
-        if (!empty($former)){
+        if (isset($this->_logContent[$type])){
+            $former = $this->_logContent[$type];
             $current = array_merge($former, $content);
         }
         
@@ -109,12 +123,12 @@ class Logger{
     }
     
     /**
-     * Write the log to log files
+     * 写入日志
      * 
-     * @param string $type
-     * @param string $content
-     * @throws PathNotFoundException
-     * @return boolean
+     * @param string $type 日志类型
+     * @param string $content 日志内容
+     * @throws PathNotFoundException 记录的日志类型子目录不存在时抛出
+     * @return boolean 日志写入是否成功
      */
     public function log($type, $content){
         $this->append($type, $content);
@@ -136,8 +150,12 @@ class Logger{
         
         $logTexts = array();
         foreach ($contents as $key=>$value){
-            if (!is_string($value)){
-                $value = serialize($value);
+            if (!is_scalar($value)){
+            	if (is_resource($value)){
+            		$value = "Resource type ". get_resource_type($value) .", ". strval($value);
+            	}else{
+                	$value = serialize($value);
+            	}
             }
             $logTexts[] = "[{$key}:{$value}]";
         }
@@ -150,11 +168,12 @@ class Logger{
     }
     
     /**
-     * Overide __call magic method
+     * 不同日志类型日志写入魔术方法，和App的基础配置logTypes项目关联
      * 
-     * @param string $name
-     * @param array $arguments
-     * @throws \Exception
+     * @see App
+     * @param string $name 方法名
+     * @param array $arguments 参数
+     * @throws Exception\WrongParamException 参数错误异常，解析的方法名对应的日志类型未定义时抛出
      */
     public function __call($name, $arguments){
         $func = substr($name, 0, 3);
